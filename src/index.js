@@ -185,7 +185,7 @@ function main() {
     renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.outputEncoding = THREE.sRGBEncoding;
-	renderer.gammaOutput = true;
+	//renderer.gammaOutput = true;
     renderer.gammaFactor = 2.2;
     renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
