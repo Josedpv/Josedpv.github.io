@@ -260,6 +260,7 @@ function addGUISkybox(){//Create animated sky
 		materiall.update();
 
 	});
+	
 
 }
 function addSkybox(){//Create animated sky
