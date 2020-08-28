@@ -187,8 +187,8 @@ function main() {
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
     renderer.gammaFactor = 2.2;
-    renderer.shadowMap.enabled = true;
-	renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+   // renderer.shadowMap.enabled = true;
+//	renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 	
 	//Camera
 	camera.position.x = 14;
@@ -223,12 +223,19 @@ function main() {
 	//*/
 	
     var plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry( 80, 80 ),
+        new THREE.PlaneBufferGeometry( 30, 30 ),
 		new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } )
 		);
     plane.rotation.x = - Math.PI / 2;
     plane.receiveShadow = true;
 	scene.add( plane );
+
+
+
+
+	
+	
+	addSky();
 	addGUI();
 	addGUIFirework();
 	engine= new ParticleEngine();
@@ -237,6 +244,34 @@ function main() {
 	
 
 	
+}
+function addSky(){//Create animated sky
+
+	//create video
+	var video= document.createElement('video');
+	video.load();
+	video.autoplay= true;
+	video.needsUpdate= true;
+	video.loop	= true;
+	//choose the video
+	video.src	= "images/Sky.mp4";
+	//video.src	= "images/Lluvia.mp4";
+	//video.src	= "images/Amanecer.mp4";
+	
+	var texture = new THREE.VideoTexture( video );
+
+    var skyGeo;
+    //add sphere
+	skyGeo=	new THREE.SphereGeometry( 300, 30, 30 );
+	var loader  = new THREE.TextureLoader();
+	//adding the video to the sphere
+ 	var material = new THREE.MeshBasicMaterial({ map: texture,});
+	var sky = new THREE.Mesh(skyGeo, material);
+	// put the video both sides of the sphere
+	sky.material.side = THREE.DoubleSide;
+
+	//add sky
+	scene.add(sky);
 }
 function restartEngine(parameters)
 {
