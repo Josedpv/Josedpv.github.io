@@ -62,7 +62,7 @@ var mixer, mixer2,mixerCap;
 //Lights
 var spotLight, light, hemisLight;
 var spotLightHelper;
-
+var materiall;
 //Interface
 var gui;
 var obj;
@@ -235,9 +235,10 @@ function main() {
 
 	
 	
-	addSky();
+	addSkybox();
 	addGUI();
 	addGUIFirework();
+	addGUISkybox();
 	engine= new ParticleEngine();
 	engine.setValues(Examples.fountain);
 	engine.initialize(scene);
@@ -245,7 +246,23 @@ function main() {
 
 	
 }
-function addSky(){//Create animated sky
+function addGUISkybox(){//Create animated sky
+	
+	
+	
+	var guiSLSky = gui.addFolder('Skybox');
+	guiSLSky.add(materiall, 'roughness').onChange(function (val) {
+		materiall.roughness = val;
+		materiall.update();
+	});
+	guiSLSky.add(materiall, 'metalness').onChange(function (val) {
+		spotLight.metalness = val;
+		materiall.update();
+
+	});
+
+}
+function addSkybox(){//Create animated sky
 
 	//create video
 	var video= document.createElement('video');
@@ -263,15 +280,24 @@ function addSky(){//Create animated sky
     var skyGeo;
     //add sphere
 	skyGeo=	new THREE.SphereGeometry( 300, 30, 30 );
-	var loader  = new THREE.TextureLoader();
+	
 	//adding the video to the sphere
- 	var material = new THREE.MeshBasicMaterial({ map: texture,});
-	var sky = new THREE.Mesh(skyGeo, material);
-	// put the video both sides of the sphere
-	sky.material.side = THREE.DoubleSide;
+ 	//var material = new THREE.MeshBasicMaterial({ map: texture,});
+     materiall = new THREE.MeshStandardMaterial( {
 
+    //color: 0xffffff,
+
+    roughness: 1,
+    metalness: 1,
+    map: texture,
+
+    } );
+	var Skybox = new THREE.Mesh(skyGeo, materiall);
+	// put the video both sides of the sphere
+	Skybox.material.side = THREE.DoubleSide;
+   
 	//add sky
-	scene.add(sky);
+	scene.add(Skybox);
 }
 function restartEngine(parameters)
 {
