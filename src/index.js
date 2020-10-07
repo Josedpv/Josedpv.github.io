@@ -8,31 +8,9 @@ const THREE = require('three');
 // CommonJS:
 const dat = require('dat.gui');
 const Stats = require('stats.js');
-import { Examples, ParticleEngine } from 'js/ParticleEngine.js';
-
-//const Particle= require('js/ParticleEngine.js');
-//const Examples= require('js/ParticleEngineExamples.js');
-
-//Particles
-
-var engine;
-	
-//import * as Examples from 'js/ParticleEngineExamples.js';
-//import * as Particle from 'js/ParticleEngine.js';
-
-//import  * as info from 'js/info.js';
-
-//import  * as jqueryui from 'js/jquery-ui.js';
-//import  * as jquery191 from 'js/jquery-1.9.1.js';
-//import * as DAT from 'js/DAT.GUI.min.js';
-//import  * as Three from 'js/Three.js';
-//import  * as Detector from 'js/Detector.js';
-//import  * as Statsjs from 'js/Stats.js';
-//import  * as OrbitControlsjs from 'js/OrbitControls.js';
-//import  * as THREExKeyboardState from 'js/THREEx.KeyboardState.js';
-//import  * as THREExFullScreen from 'js/THREEx.FullScreen.js';
-//import  * as THREExWindowResize from 'js/THREEx.WindowResize.js';
-
+ /*****************************START ADDED CODE***************/
+      import { Examples, ParticleEngine } from 'js/ParticleEngine.js';
+     /*****************************FINISH ADDED CODE**************/
 
 
 
@@ -56,7 +34,7 @@ const clock = new THREE.Clock();
 //Scene and render
 var renderer, scene, bgScene, camera, cameraControls;
 var bgMesh;
-
+var engine;
 var controls;
 var mixer, mixer2,mixerCap;
 //Lights
@@ -67,7 +45,7 @@ var materiall;
 var gui;
 var obj;
 var stats;
-
+var childd;
 function init() 
 {
 	
@@ -96,10 +74,12 @@ function init()
 	renderer = new THREE.WebGLRenderer({ canvas });
 	scene = new THREE.Scene();
     // scene.fog = new THREE.Fog( 0x443333, 1, 4 );
-
-		var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+ /*****************************START ADDED CODE***************/
+       var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 2, FAR = 5000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+     /*****************************FINISH ADDED CODE**************/
+		
 	
 	
 	//Lights
@@ -202,8 +182,19 @@ function main() {
 	//Models
 	// loadDraco('model/draco/alocasia_s.drc');
 	// loadGLTF('model/glb/Flamingo.glb', [-2, 2, 1], [0.01, 0.01, 0.01]);
-	///*
-	loadGLTF('model/gltf/capoeira/Capoeira.gltf', [1, 0, 0], [0.01, 0.01, 0.01]).then(function(gltf){
+	/// 
+	/*
+	loadGLTF('model/gltf/capoeira/Capoeira.gltf', [1, 0, 0], [0.01, 0.01, 0.01]).then(function(gltff){
+		console.log('termine gltf!');
+		mixerCap = new THREE.AnimationMixer( gltff.scene );
+		var action = mixerCap.clipAction( gltff.animations[ 0 ] );
+		action.play();
+		
+	}).catch(function (err) {
+		console.log(err);
+		
+	});/* 
+    loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [9, 9, 9]).then(function(gltf){
 		console.log('termine gltf!');
 		mixerCap = new THREE.AnimationMixer( gltf.scene );
 		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
@@ -211,7 +202,15 @@ function main() {
 		
 	}).catch(function (err) {
 		console.log(err);
+	});/*
+	loadGLTFF('model/gltf/miguelangelo/scene.gltf', [1, 0, 0], [9, 9, 9]).then(function(gltf){
+		console.log('termine gltf!');
+		mixerCap = new THREE.AnimationMixer( gltf.scene );
+		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
+		action.play();
 		
+	}).catch(function (err) {
+		console.log(err);
 	});
 	loadFBX('model/fbx/avatar1.fbx', [2, 0, -1], [0.01, 0.01, 0.01]).then(function(obj1){
 		// console.log('termine!');
@@ -221,10 +220,14 @@ function main() {
 		
 	})
 	//*/
+     /*****************************START ADDED CODE***************/
+        var floorTexture = new THREE.TextureLoader().load( 'images/checkerboard.jpg' )
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 10, 10 );
 	
-    var plane = new THREE.Mesh(
+	var plane = new THREE.Mesh(
         new THREE.PlaneBufferGeometry( 30, 30 ),
-		new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } )
+		new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010, map: floorTexture, side: THREE.DoubleSide} )
 		);
     plane.rotation.x = - Math.PI / 2;
     plane.receiveShadow = true;
@@ -235,29 +238,32 @@ function main() {
 
 	
 	
-	addSkybox();
-	addGUI();
-	addGUIFirework();
-	addGUISkybox();
+
 	engine= new ParticleEngine();
 	engine.setValues(Examples.fountain);
 	engine.initialize(scene);
 	
-
+	addSkybox();
+	addGUI();
+	addGUIFirework();
+	addGUISkybox();
+     /*****************************FINISH ADDED CODE**************/
+	
 	
 }
-function addGUISkybox(){//Create animated sky
+ /*****************************START ADDED CODE***************/
+        function addGUISkybox(){//Create animated sky
 	
 	
 	
 	var guiSLSky = gui.addFolder('Skybox');
-	guiSLSky.add(materiall, 'roughness').onChange(function (val) {
+	guiSLSky.add(materiall, 'roughness').min(0).max(1).step(0.1).onChange(function (val) {
 		materiall.roughness = val;
-		materiall.update();
+		//materiall.update();
 	});
-	guiSLSky.add(materiall, 'metalness').onChange(function (val) {
-		spotLight.metalness = val;
-		materiall.update();
+	guiSLSky.add(materiall, 'metalness').min(0).max(1).step(0.1).onChange(function (val) {
+		materiall.metalness = val;
+		//materiall.update();
 
 	});
 	
@@ -296,10 +302,12 @@ function addSkybox(){//Create animated sky
 	var Skybox = new THREE.Mesh(skyGeo, materiall);
 	// put the video both sides of the sphere
 	Skybox.material.side = THREE.DoubleSide;
-   
+	//Skybox.Side = THREE.DoubleSide;
 	//add sky
 	scene.add(Skybox);
 }
+     /*****************************FINISH ADDED CODE**************/
+
 function restartEngine(parameters)
 {
 	//resetCamera();
@@ -309,6 +317,8 @@ function restartEngine(parameters)
 	engine.setValues( parameters );
 	engine.initialize(scene);
 }
+ /*****************************START ADDED CODE***************/
+        
 function addGUIFirework (){
 	 var parameters = 
 	{
@@ -337,6 +347,7 @@ function addGUIFirework (){
 	guiALLF.add( parameters, 'snow'       ).name("Snow");
 	guiALLF.add( parameters, 'firework'   ).name("Firework");
 }
+     /*****************************FINISH ADDED CODE**************/
 function loadFBX(path,pos,scale) {
 	const promise = new Promise(function (resolve, reject) {
 		var loader = new FBXLoader();
@@ -403,7 +414,8 @@ function loadGLTF(path, pos,scale) {
 				gltf.scenes; // Array<THREE.Group>
 				gltf.cameras; // Array<THREE.Camera>
 				gltf.asset; // Object
-				resolve(gltf)
+				
+				resolve(gltf);
 	
 			},
 			// called while loading is progressing
@@ -420,7 +432,92 @@ function loadGLTF(path, pos,scale) {
 			});	
 	});
 }
+ /*****************************START ADDED CODE***************/
+        
+function loadGLTFF(path, pos,scale) {
+	
+	return new Promise((resolve, reject)=>{
 
+		// Instantiate a loader
+		var loader = new GLTFLoader();
+	
+		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
+		var dracoLoader = new DRACOLoader();
+		// dracoLoader.setDecoderPath( '/examples/js/libs/draco/' );
+		dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+		loader.setDRACOLoader( dracoLoader );
+	
+		// Load a glTF resource
+		loader.load(
+			// resource URL
+			path,
+			// called when the resource is loaded
+			function ( gltf ) {
+				//Transformations
+				gltf.scene.scale.set(scale[0], scale[1], scale[2]);
+				gltf.scene.position.set(pos[0], pos[1], pos[2]);
+				gltf.scene.castShadow = true;
+				gltf.scene.receiveShadow = true;
+				gltf.scene.traverse( function ( child ) {
+					
+					if ( child.isMesh ) {
+						child.castShadow = true;
+						child.receiveShadow = true;
+					}
+					if(child instanceof THREE.Mesh){
+						//child.material.emissiveIntensity ;console.log(child.material);
+						//child.material.emissive = new THREE.Color( 0xfff);
+						
+					}childd=child;
+				} );
+				scene.add( gltf.scene );
+				console.log(gltf);
+				addGUIGLTF();
+				gltf.animations; // Array<THREE.AnimationClip>
+				gltf.scene; // THREE.Group
+				gltf.scenes; // Array<THREE.Group>
+				gltf.cameras; // Array<THREE.Camera>
+				gltf.asset; // Object
+
+				
+				resolve(gltf);
+	
+			},
+			// called while loading is progressing
+			function ( xhr ) {
+	
+				console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+	
+			},
+			// called when loading has errors
+			function ( error ) {
+	
+				console.log( 'An error happened' );
+				reject(error);
+			});	
+	});
+}
+function addGUIGLTF(){//Create animated sky
+	
+	
+	
+	var guigltf = gui.addFolder('GLTF');
+	guigltf.add(childd.material, 'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
+		childd.material.emissiveIntensity = val;
+		
+	}).name('Intensity');
+	guigltf.addColor(childd.material, 'emissive').onChange(function (val) {
+		childd.material.emissive=val;
+		
+
+	}).name('Emissive');
+
+
+	
+
+}
+
+     /*****************************FINISH ADDED CODE**************/
 function loadDraco(path) {
 	var dracoLoader = new DRACOLoader();
 	// It is recommended to always pull your Draco JavaScript and WASM decoders
@@ -490,7 +587,7 @@ window.addEventListener("resize", displayWindowSize);
 function animate() 
 {
 	
-
+/*
 	// const hasControlsUpdated = cameraControls.update( delta );
 	requestAnimationFrame(animate);
 	render();
@@ -501,8 +598,15 @@ function animate()
 	stats.update();	
 	//controls.update();
 	
-   
-
+   */
+  requestAnimationFrame(animate);
+  render();
+  renderer.render(scene, camera);
+  controls.update();
+  stats.update();
+  var dt = clock.getDelta();
+  engine.update( dt * 0.5);	
+  //controls.update();
 }
 
 
