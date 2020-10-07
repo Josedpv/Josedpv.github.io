@@ -130,8 +130,8 @@ Examples =
 		velocitySpread   : new THREE.Vector3( 80, 50, 80 ), 
 		accelerationBase : new THREE.Vector3( 0,-10,0 ),
 		
-		particleTexture : THREE.ImageUtils.loadTexture( 'images/smokeparticle.png'),
-
+		//particleTexture : THREE.ImageUtils.loadTexture( 'images/smokeparticle.png'),
+		particleTexture: new THREE.Color(0x000000),
 		angleBase               : 0,
 		angleSpread             : 720,
 		angleVelocityBase       : 0,
