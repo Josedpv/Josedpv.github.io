@@ -46,6 +46,7 @@ var gui;
 var obj;
 var stats;
 var childd;
+var childdd;
 function init() 
 {
 	
@@ -193,8 +194,13 @@ function main() {
 	}).catch(function (err) {
 		console.log(err);
 		
+<<<<<<< HEAD
 	});*
     loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [5, 5, 5]).then(function(gltf){
+=======
+	});
+    loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
+>>>>>>> a0a8b1d48e1a475b91eb3f850bd93003a91b8a95
 		console.log('termine gltf!');
 		mixerCap = new THREE.AnimationMixer( gltf.scene );
 		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
@@ -472,6 +478,7 @@ function loadGLTFF(path, pos,scale) {
 					}childd=child;
 				} );
 				scene.add( gltf.scene );
+				childd=gltf.scene;
 				console.log(gltf);
 				addGUIGLTF();
 				gltf.animations; // Array<THREE.AnimationClip>
@@ -503,9 +510,20 @@ function addGUIGLTF(){//Create animated sky
 	
 	
 	var guigltf = gui.addFolder('GLTF');
-	guigltf.add(childd.material, 'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
-		childd.material.emissiveIntensity = val;
+	guigltf.add(childdd.material, 'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
 		
+		childd.traverse( function ( child ) {
+					
+			if ( child.isMesh ) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+			if(child instanceof THREE.Mesh){
+				
+				
+				child.material.emissiveIntensity = val;
+			}
+		});
 	}).name('Intensity');
 	guigltf.addColor(childd.material, 'emissive').onChange(function (val) {
 		childd.material.emissive=val;
