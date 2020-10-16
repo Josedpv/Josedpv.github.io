@@ -184,7 +184,7 @@ function main() {
 	// loadDraco('model/draco/alocasia_s.drc');
 	// loadGLTF('model/glb/Flamingo.glb', [-2, 2, 1], [0.01, 0.01, 0.01]);
 	/// 
-	/*
+	
 	loadGLTF('model/gltf/capoeira/Capoeira.gltf', [1, 0, 0], [0.01, 0.01, 0.01]).then(function(gltff){
 		console.log('termine gltf!');
 		mixerCap = new THREE.AnimationMixer( gltff.scene );
@@ -194,22 +194,9 @@ function main() {
 	}).catch(function (err) {
 		console.log(err);
 		
-<<<<<<< HEAD
-	});*
-    loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [5, 5, 5]).then(function(gltf){
-=======
 	});
+	/*
     loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
->>>>>>> a0a8b1d48e1a475b91eb3f850bd93003a91b8a95
-		console.log('termine gltf!');
-		mixerCap = new THREE.AnimationMixer( gltf.scene );
-		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
-		action.play();
-		
-	}).catch(function (err) {
-		console.log(err);
-	});*/
-	loadGLTFF('model/gltf/miguelangelo/scene.gltf', [1, 0, 0], [5, 5, 5]).then(function(gltf){
 		console.log('termine gltf!');
 		mixerCap = new THREE.AnimationMixer( gltf.scene );
 		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
@@ -218,6 +205,15 @@ function main() {
 	}).catch(function (err) {
 		console.log(err);
 	});/*
+	loadGLTFF('model/gltf/miguelangelo/scene.gltf', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
+		console.log('termine gltf!');
+		mixerCap = new THREE.AnimationMixer( gltf.scene );
+		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
+		action.play();
+		
+	}).catch(function (err) {
+		console.log(err);
+	});/**/ 
 	loadFBX('model/fbx/avatar1.fbx', [2, 0, -1], [0.01, 0.01, 0.01]).then(function(obj1){
 		// console.log('termine!');
 		mixer = new THREE.AnimationMixer( obj1 );
@@ -472,10 +468,10 @@ function loadGLTFF(path, pos,scale) {
 					}
 					if(child instanceof THREE.Mesh){
 						
-						child.material.emissive ;//= new THREE.Color( 0xfff);
+						child.material.emissive ;
 						child.material.emissiveIntensity ;console.log(child.material);
-					child.material.map.THREE.MeshStandardMaterial.matcap;
-					}childd=child;
+					
+					}childdd=child;
 				} );
 				scene.add( gltf.scene );
 				childd=gltf.scene;
@@ -525,14 +521,38 @@ function addGUIGLTF(){//Create animated sky
 			}
 		});
 	}).name('Intensity');
-	guigltf.addColor(childd.material, 'emissive').onChange(function (val) {
-		childd.material.emissive=val;
+	guigltf.addColor(childdd.material, 'emissive').onChange(function (val) {
+		
+		childd.traverse( function ( child ) {
+					
+			if ( child.isMesh ) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+			if(child instanceof THREE.Mesh){
+				
+				child.material.emissive=val;
+				
+			}
+		});
 	}).name('Emissive');
 
 	
-	guigltf.add(childd.material.THREE.MeshStandardMaterial, 'matcap').onChange(function (val) {
-		childd.material.THREE.MeshStandardMaterial.matcap = val;
+	guigltf.add(childdd.material,'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
 		
+		
+		childd.traverse( function ( child ) {
+					
+			if ( child.isMesh ) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+			if(child instanceof THREE.Mesh){
+				
+				
+				child.material.matcap = val;
+			}
+		});
 	}).name('Map');
 	
 	
