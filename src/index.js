@@ -195,7 +195,7 @@ function main() {
 		console.log(err);
 		
 	});
-	/*
+	
     loadGLTFF('model/gltf/GLTFMATCAP/scene.gltf', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
 		console.log('termine gltf!');
 		mixerCap = new THREE.AnimationMixer( gltf.scene );
