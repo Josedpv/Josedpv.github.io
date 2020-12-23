@@ -42,6 +42,18 @@ var obj;
 var stats;
 var childd;
 var childdd;
+const boxGeometry = new THREE.BoxGeometry();
+const sphereGeometry = new THREE.SphereGeometry();
+const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0);
+
+const torusKnotGeometry = new THREE.TorusKnotGeometry();
+
+var material = [];
+var matcapTexture = [];
+var materialFolder = [];
+var meshMatcapMaterialFolder =[];
+var data = [];
+
 function init() 
 {
 	
@@ -195,42 +207,36 @@ function main() {
 		console.log(err);
 	});*/
 	
-const boxGeometry = new THREE.BoxGeometry();
-const sphereGeometry = new THREE.SphereGeometry();
-const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0);
 
-const torusKnotGeometry = new THREE.TorusKnotGeometry();
+ material[0] = new THREE.MeshMatcapMaterial();
 
-var material = new THREE.MeshMatcapMaterial();
-var matcapTexture = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_2_baseColor.png")
-material.matcap = matcapTexture
-
-
-const cube = new THREE.Mesh(boxGeometry, material)
+matcapTexture [0]= new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_2_baseColor.png")
+material[0].matcap = matcapTexture [0];
+const cube = new THREE.Mesh(boxGeometry, material[0])
 cube.position.x = 5
 cube.position.y = 2 
 scene.add(cube)
 
-var material1 = new THREE.MeshMatcapMaterial();
-var matcapTexture1 = new THREE.TextureLoader().load("../client/js/images/DarkSea-xpos.jpg")
-material1.matcap = matcapTexture1
-const sphere= new THREE.Mesh(sphereGeometry, material1)
+material[1] = new THREE.MeshMatcapMaterial();
+matcapTexture[1] = new THREE.TextureLoader().load("../client/js/images/DarkSea-xpos.jpg")
+material[1].matcap = matcapTexture[1];
+const sphere= new THREE.Mesh(sphereGeometry, material[1])
 sphere.position.x = 3
 sphere.position.y = 2 
 scene.add(sphere)
 
-var material2 = new THREE.MeshMatcapMaterial();
-var matcapTexture2 = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_3_baseColor.png")
-material2.matcap = matcapTexture2
-const icosahedron = new THREE.Mesh(icosahedronGeometry, material2)
+material[2] = new THREE.MeshMatcapMaterial();
+matcapTexture[2] = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_3_baseColor.png")
+material[2].matcap = matcapTexture[2]
+const icosahedron = new THREE.Mesh(icosahedronGeometry, material[2])
 icosahedron.position.x = 0
 icosahedron.position.y = 2 
 scene.add(icosahedron)
 
-var material3 = new THREE.MeshMatcapMaterial();
-var matcapTexture3 = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_baseColor.png")
-material3.matcap = matcapTexture3
-const torusKnot = new THREE.Mesh(torusKnotGeometry, material3)
+material[3] = new THREE.MeshMatcapMaterial();
+matcapTexture[3] = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_baseColor.png")
+material[3].matcap = matcapTexture[3]
+const torusKnot = new THREE.Mesh(torusKnotGeometry, material[3])
 torusKnot.position.x = -5
 torusKnot.position.y = 2 
 scene.add(torusKnot)
@@ -243,31 +249,37 @@ var options = {
         "DoubleSide": THREE.DoubleSide,
     }
 }
+const materialFolder1 = gui.addFolder('THREE.Material')
+
+for (let index = 0; index < material.length; index++) {
+	
+	materialFolder[index] = materialFolder1.addFolder('THREE.Material '+ (index+1))	
+	materialFolder[index].add(material[index], 'transparent')
+	materialFolder[index].add(material[index], 'opacity', 0, 1, 0.01)
+	materialFolder[index].add(material[index], 'depthTest')
+	materialFolder[index].add(material[index], 'depthWrite')
+	materialFolder[index].add(material[index], 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial(material,index))
+	materialFolder[index].add(material[index], 'visible')
+	materialFolder[index].add(material[index], 'side', options.side).onChange(() => updateMaterial(material,index))
+	materialFolder[index].open()
 
 
-const materialFolder = gui.addFolder('THREE.Material')
-materialFolder.add(material, 'transparent')
-materialFolder.add(material, 'opacity', 0, 1, 0.01)
-materialFolder.add(material, 'depthTest')
-materialFolder.add(material, 'depthWrite')
-materialFolder.add(material, 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial())
-materialFolder.add(material, 'visible')
-materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
-materialFolder.open()
+	
+	data [index] = {
+		color: material[index].color.getHex()
+	};
 
-var data = {
-    color: material.color.getHex()
-};
+	
+	meshMatcapMaterialFolder[index] = materialFolder[index].addFolder('THREE.MeshMatcapMaterial');
+	meshMatcapMaterialFolder[index].addColor(data[index], 'color').onChange(() => { material[index].color.setHex(Number(data[index].color.toString().replace('#', '0x'))) });
+	meshMatcapMaterialFolder[index].add(material[index], 'flatShading').onChange(() => updateMaterial(material,index));
+	meshMatcapMaterialFolder[index].open();
 
-
-var meshMatcapMaterialFolder = gui.addFolder('THREE.MeshMatcapMaterial');
-meshMatcapMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) });
-meshMatcapMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
-meshMatcapMaterialFolder.open()
-
-function updateMaterial() {
-    material.side = Number(material.side)
-    material.needsUpdate = true
+	
+}
+function updateMaterial(material,index) {
+	material[index].side = Number(material[index].side);
+	material[index].needsUpdate = true;
 }
         var floorTexture = new THREE.TextureLoader().load( '../client/js/images/checkerboard.jpg' )
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
