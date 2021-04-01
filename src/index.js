@@ -18,6 +18,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //Model loaders
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import  TweenUmd, {  Tween, TWEEN } from './client/js/TWEEN/Tween.umd.js';
 
 
 
@@ -33,7 +34,7 @@ var engine;
 var controls;
 var mixer, mixer2,mixerCap;
 //Lights
-var spotLight, light, hemisLight;
+var spotLight,hemisLight, light,plight2, plight=[];
 var spotLightHelper;
 var materiall;
 //Interface
@@ -53,6 +54,307 @@ var matcapTexture = [];
 var materialFolder = [];
 var meshMatcapMaterialFolder =[];
 var data = [];
+
+//fireflies Tween
+
+var camera, scene, renderer, stats;
+var cube = [],cube2= [],cube3;
+var easing	=  TweenUmd.Easing.Quadratic.InOut ;
+var delay= 0;
+var duration=2500;
+var range=8;
+
+var current= [];
+var total=17;
+var tweenHead= [];
+var tweenHead1= [];
+var tweenHead2= [];
+var tweenHead3= [];
+var tweenHead4= [];
+var tweenBack= [];
+var update	;
+function Circular(index){
+	tweenHead[index]	= new  TweenUmd.Tween(current[index])
+	.to({x:24 },  duration)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+
+	tweenBack[index]	= new  TweenUmd.Tween(current[index])
+		.to({x:-24},  duration)
+		.delay( delay)
+		.easing(easing)
+		.onUpdate(update);
+
+	tweenHead1[index]	= new  TweenUmd.Tween(current[index])
+	.to({y: 0},  duration/2)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+	tweenHead3[index]	= new  TweenUmd.Tween(current[index])
+	.to({y: ( 52)},  duration/2)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+	
+		
+	tweenHead2[index]	= new  TweenUmd.Tween(current[index])
+	.to({y:  26},  duration/2)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+
+	tweenHead4[index]	= new  TweenUmd.Tween(current[index])
+	.to({y:  26},  duration/2)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+
+
+
+
+
+	
+	tweenHead1[index].chain(tweenHead4[index]);
+	tweenHead4[index].chain(tweenHead3[index]);
+	tweenHead3[index].chain(tweenHead2[index]);
+	tweenHead2[index].chain(tweenHead1[index]);
+	
+	tweenHead[index].chain(tweenBack[index]);
+	tweenBack[index].chain(tweenHead[index]);
+	tweenHead1[index].start();
+	tweenHead[index].start();
+}
+function Vertical(index){
+	tweenHead[index]	= new  TweenUmd.Tween(current[index])
+			.to({y:50},  duration)
+			.delay( delay)
+			.easing(easing)
+			.onUpdate(update);
+
+			tweenBack[index]	= new  TweenUmd.Tween(current[index])
+				.to({y:  26},  duration)
+				.delay( delay)
+				.easing(easing)
+				.onUpdate(update);
+
+			tweenHead[index].chain(tweenBack[index]);
+			tweenBack[index].chain(tweenHead[index]);
+			
+			tweenHead[index].start();
+}
+function Horizontal(index){
+	tweenHead[index]	= new  TweenUmd.Tween(current[index])
+			.to({x: 24},  duration)
+			.delay( delay)
+			.easing(easing)
+			.onUpdate(update);
+
+			tweenBack[index]	= new  TweenUmd.Tween(current[index])
+				.to({x:-24},  duration)
+				.delay( delay)
+				.easing(easing)
+				.onUpdate(update);
+
+			tweenHead[index].chain(tweenBack[index]);
+			tweenBack[index].chain(tweenHead[index]);
+			
+			tweenHead[index].start();
+}
+function Virolante(index){
+	tweenHead[index]	= new  TweenUmd.Tween(current[index])
+			.to({x: 24},  duration*3)
+			.delay( delay)
+			.easing(easing)
+			.onUpdate(update);
+
+			tweenBack[index]	= new  TweenUmd.Tween(current[index])
+				.to({x:-24},  duration*3)
+				.delay( delay)
+				.easing(easing)
+				.onUpdate(update);
+				tweenHead1[index]	= new  TweenUmd.Tween(current[index])
+				.to({y: 27},  duration/3)
+				.delay( delay)
+				.easing(TweenUmd.Easing.Bounce.InOut)
+				tweenHead2[index]	= new  TweenUmd.Tween(current[index])
+				.to({y: 26},  duration/3)
+				.delay( delay)
+				.easing(TweenUmd.Easing.Bounce.InOut)
+			tweenHead[index].chain(tweenBack[index]);
+			tweenBack[index].chain(tweenHead[index]);
+			tweenHead1[index].chain(tweenHead2[index]);
+			tweenHead2[index].chain(tweenHead1[index]);
+			tweenHead1[index].start();
+			tweenHead[index].start();
+}
+function setupTween()
+{
+
+	 update	= function(){
+		for (let index = 1; index < total; index++) {
+			
+			cube[index].position.x = current[index].x;
+			cube[index].position.y = current[index].y;
+			cube[index].position.z = current[index].z;
+			cube2[index].position.x = current[index].x;
+			cube2[index].position.y = current[index].y;
+			cube2[index].position.z = current[index].z;
+		}
+
+
+	}
+	TweenUmd.removeAll();
+	for (let index = 1; index < total; index++) {
+
+		 current	[index]= { x:  -24, y:  26, z:  -range*index };
+		 
+		if(index<5)
+		{
+			Circular(index);//movimiento circular
+			
+		}else if(index<9)
+		{		
+			Horizontal(index);//movimiento horizontal
+			
+		}
+		else if(index<13)
+		{
+			Vertical(index);//movimiento vertical
+			
+		}
+		else if(index<17)
+		{
+			Virolante(index);//movimiento vertical
+		}
+	}
+}
+ 
+
+ 
+/*
+
+init();
+
+
+
+animate();
+
+
+
+ 
+
+ 
+
+function buildGui(options, callback)
+{
+ 
+
+
+	var easings	= {};
+	Object.keys( TweenUmd.Easing).forEach(function(family){
+		Object.keys( TweenUmd.Easing[family]).forEach(function(direction){
+			var name	= family+'.'+direction;
+			easings[name]	= name;
+		});
+	});
+ 
+
+
+	var change	= function(){
+		callback(options)
+	}
+ 
+
+
+	var gui = new dat.GUI({ height	: 4 * 32 - 1 });
+	gui.add(options, 'range').name('Range coordinate').min(64).max(1280)	.onChange(change);
+	gui.add(options, 'duration').name('Duration (ms)').min(100).max(4000)	.onChange(change);
+	gui.add(options, 'delay').name('Delay (ms)').min(0).max(1000)		.onChange(change);
+	gui.add(options, 'easing').name('Easing Curve').options(easings)	.onChange(change);
+}
+ 
+
+function init() {
+ 
+
+
+	//if ( ! Detector.webgl )	Detector.addGetWebGLMessage();
+
+
+	camera	= new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+	camera.position.z = 1000;
+ 
+
+
+	scene	= new THREE.Scene();
+ 
+
+
+	buildGui(userOpts, function(){
+		console.log("userOpts", userOpts)
+		setupTween();
+	});
+ 
+
+
+	setupTween();
+ 
+
+
+	cube	= new THREE.Mesh( new THREE.SphereGeometry( 200, 48, 32 ), new THREE.MeshNormalMaterial() );
+	cube.position.x = - range;
+ 
+
+
+	scene.add( cube );
+ 
+
+
+	container = document.createElement( 'div' );
+	document.body.appendChild( container );
+ 
+
+
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	container.appendChild( renderer.domElement );
+	
+ 
+
+
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	container.appendChild( stats.domElement );
+}
+ 
+
+function animate() {
+ 
+
+
+	render();
+ 
+
+
+	requestAnimationFrame( animate );
+
+
+	stats.update();
+ 
+
+
+	 TweenUmd.update();
+}
+ 
+
+function render() {
+ 
+
+
+	renderer.render( scene, camera );
+}*/
 
 function init() 
 {
@@ -92,8 +394,8 @@ function init()
 	
 	//Lights
 	// spotLight = new THREE.SpotLight( 0xffff00 );
-	light = new THREE.AmbientLight( obj.color0 ); // soft white light
-	hemisLight = new THREE.HemisphereLight( obj.color0, obj.colorg, 1 );
+//	light = new THREE.AmbientLight( obj.color0 ); // soft white light
+	//hemisLight = new THREE.HemisphereLight( obj.color0, obj.colorg, 1 );
 	
 
 	stats = new Stats();
@@ -101,65 +403,23 @@ function init()
 
 function addLights() 
 {
+	for (let index = 1; index < total; index++) {
+
+		plight[index]=new THREE.PointLight(0xffffff,1);
+
+		plight[index].penumbra = 0.5;
+		plight[index].castShadow = true;
+
+		cube[index].add(plight[index]);
+	}
 	
-	//Hemisphere light
-	scene.add( hemisLight );
-	spotLight = new THREE.SpotLight();
-    spotLight.angle = Math.PI / 16;
-    spotLight.penumbra = 0.5;
-    spotLight.castShadow = true;
-    spotLight.position.set( obj.posX, obj.posY, obj.posZ );
-	scene.add( spotLight );
-	spotLightHelper = new THREE.SpotLightHelper( spotLight );
-	scene.add( spotLightHelper );
-	//fireworklight
-	var light = new THREE.PointLight(0xffffff);
-	light.position.set(0,250,0);
-	scene.add(light);
 }
 
 function addGUI() 
 {
 	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 	document.body.appendChild( stats.dom );
-	var guiALL= gui.addFolder('Light');
-	var guiSL = guiALL.addFolder('SpotLight');
-	guiSL.add(obj, 'helpSpot').onChange(function (val) {
-		spotLightHelper.visible = val;
-	});
-	guiSL.add(obj, 'posX').onChange(function (val) {
-		spotLight.position.x = val;
-		spotLightHelper.update();
-	});
-	guiSL.add(obj, 'posY').onChange(function (val) {
-		spotLight.position.y = val;
-		spotLightHelper.update();
 
-	});
-	guiSL.add(obj, 'posZ').onChange(function (val) {
-		spotLight.position.z = val;
-		spotLightHelper.update();
-
-	});
-	//Ambient Light
-	var guiAL = guiALL.addFolder('AmbientLight');
-	guiAL.addColor(obj, 'color0').onChange(function (val) {
-		light.color.set(val);
-		hemisLight.color.set(val);
-	});
-	guiAL.add(obj, 'intAmbien').min(0).max(1).step(0.1).onChange(function (val) {
-		light.intensity = val;
-	}).name('Intensity');
-
-	//Hemisphere Light
-	var guiHL = guiALL.addFolder('HemisphereLight');
-	guiHL.addColor(obj, 'colorg').onChange(function (val) {
-		hemisLight.groundColor.set(val);
-	});
-	guiHL.add(obj, 'intHemis').min(0).max(1).step(0.1).onChange(function (val) {
-		hemisLight.intensity = val;
-	}).name('Intensity');
-	
 
 	
 }
@@ -184,116 +444,37 @@ function main() {
 	camera.position.z = 6;
 	camera.lookAt( 0, 0.1, 0 );
     controls = new OrbitControls( camera, renderer.domElement );
-
-	addLights();
-
-	/*
-    loadGLTFF('../client/js/images/free_stylized_textures_tiles_with_sand/scene.gltf', [0,  12, 0], [0.05, 0.05, 0.05]).then(function(gltf){
-		console.log('termine gltf!');
-		mixerCap = new THREE.AnimationMixer( gltf.scene );
-		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
-		action.play();
-		
-	}).catch(function (err) { 
-		console.log(err);
-	});
-	loadGLTFF('../client/js/images/a.i._angel/scene.gltf', [0,  12, 0], [0.05, 0.05, 0.05]).then(function(gltf){
-		console.log('termine gltf!');
-		mixerCap = new THREE.AnimationMixer( gltf.scene );
-		var action = mixerCap.clipAction( gltf.animations[ 0 ] );
-		action.play();
-		
-	}).catch(function (err) {
-		console.log(err);
-	});*/
+	
 	
 
- material[0] = new THREE.MeshMatcapMaterial();
 
-matcapTexture [0]= new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_2_baseColor.png")
-material[0].matcap = matcapTexture [0];
-const cube = new THREE.Mesh(boxGeometry, material[0])
-cube.position.x = 5
-cube.position.y = 2 
-scene.add(cube)
-
-material[1] = new THREE.MeshMatcapMaterial();
-matcapTexture[1] = new THREE.TextureLoader().load("../client/js/images/DarkSea-xpos.jpg")
-material[1].matcap = matcapTexture[1];
-const sphere= new THREE.Mesh(sphereGeometry, material[1])
-sphere.position.x = 3
-sphere.position.y = 2 
-scene.add(sphere)
-
-material[2] = new THREE.MeshMatcapMaterial();
-matcapTexture[2] = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_3_baseColor.png")
-material[2].matcap = matcapTexture[2]
-const icosahedron = new THREE.Mesh(icosahedronGeometry, material[2])
-icosahedron.position.x = 0
-icosahedron.position.y = 2 
-scene.add(icosahedron)
-
-material[3] = new THREE.MeshMatcapMaterial();
-matcapTexture[3] = new THREE.TextureLoader().load("../client/js/images/free_stylized_textures_tiles_with_sand/textures/material_baseColor.png")
-material[3].matcap = matcapTexture[3]
-const torusKnot = new THREE.Mesh(torusKnotGeometry, material[3])
-torusKnot.position.x = -5
-torusKnot.position.y = 2 
-scene.add(torusKnot)
-
-
-var options = {
-    side: {
-        "FrontSide": THREE.FrontSide,
-        "BackSide": THREE.BackSide,
-        "DoubleSide": THREE.DoubleSide,
-    }
-}
-const materialFolder1 = gui.addFolder('THREE.Material')
-
-for (let index = 0; index < material.length; index++) {
-	
-	materialFolder[index] = materialFolder1.addFolder('THREE.Material '+ (index+1))	
-	materialFolder[index].add(material[index], 'transparent')
-	materialFolder[index].add(material[index], 'opacity', 0, 1, 0.01)
-	materialFolder[index].add(material[index], 'depthTest')
-	materialFolder[index].add(material[index], 'depthWrite')
-	materialFolder[index].add(material[index], 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial(material,index))
-	materialFolder[index].add(material[index], 'visible')
-	materialFolder[index].add(material[index], 'side', options.side).onChange(() => updateMaterial(material,index))
-	materialFolder[index].open()
-
-
-	
-	data [index] = {
-		color: material[index].color.getHex()
-	};
-
-	
-	meshMatcapMaterialFolder[index] = materialFolder[index].addFolder('THREE.MeshMatcapMaterial');
-	meshMatcapMaterialFolder[index].addColor(data[index], 'color').onChange(() => { material[index].color.setHex(Number(data[index].color.toString().replace('#', '0x'))) });
-	meshMatcapMaterialFolder[index].add(material[index], 'flatShading').onChange(() => updateMaterial(material,index));
-	meshMatcapMaterialFolder[index].open();
-
-	
-}
-function updateMaterial(material,index) {
-	material[index].side = Number(material[index].side);
-	material[index].needsUpdate = true;
-}
         var floorTexture = new THREE.TextureLoader().load( '../client/js/images/checkerboard.jpg' )
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
 	
 	var plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry( 30, 30 ),
+        new THREE.PlaneBufferGeometry( 140, 140 ),
 		new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010, map: floorTexture, side: THREE.DoubleSide} )
 		);
     plane.rotation.x = - Math.PI / 2;
     plane.receiveShadow = true;
 	scene.add( plane );
 
+for (let index = 1; index < total; index++) {
+	
+	cube[index]	= new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 10 ), new THREE.MeshBasicMaterial() );
+	cube[index].position.set(-24,26,range[index]);
+	scene.add( cube[index] );
 
+	cube2[index]	= new THREE.Mesh( new THREE.SphereGeometry( 1.5, 10, 10 ), new THREE.MeshBasicMaterial({ color: "white", transparent:true, opacity:0.50 }) );
+	cube2[index].position.set(-24,26,range[index]);
+	scene.add( cube2[index] );
+}
+setupTween();
+
+	
+	
+	addLights();
 
 
 	
@@ -301,7 +482,7 @@ function updateMaterial(material,index) {
 
 	
 	addSkybox();
-	//addGUI();
+	addGUI();
 	
 
 	//addGUISkybox();
@@ -310,23 +491,7 @@ function updateMaterial(material,index) {
 	
 }
  
-        function addGUISkybox(){//Create animated sky
-	
-	
-	
-	var guiSLSky = gui.addFolder('Skybox');
-	guiSLSky.add(materiall, 'roughness').min(0).max(1).step(0.1).onChange(function (val) {
-		materiall.roughness = val;
-		//materiall.update();
-	});
-	guiSLSky.add(materiall, 'metalness').min(0).max(1).step(0.1).onChange(function (val) {
-		materiall.metalness = val;
-		//materiall.update();
 
-	});
-	
-
-}
 function addSkybox(){//Create animated sky
 
 	//create video
@@ -365,125 +530,6 @@ function addSkybox(){//Create animated sky
 	scene.add(Skybox);
 }
     
-function loadGLTFF(path, pos,scale) {
-	
-	return new Promise((resolve, reject)=>{
-
-		// Instantiate a loader
-		var loader = new GLTFLoader();
-	
-		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
-		var dracoLoader = new DRACOLoader();
-		// dracoLoader.setDecoderPath( '/examples/js/libs/draco/' );
-		dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-		loader.setDRACOLoader( dracoLoader );
-	
-		// Load a glTF resource
-		loader.load(
-			// resource URL
-			path,
-			// called when the resource is loaded
-			function ( gltf ) {
-				//Transformations
-				gltf.scene.scale.set(scale[0], scale[1], scale[2]);
-				gltf.scene.position.set(pos[0], pos[1], pos[2]);
-				gltf.scene.castShadow = true;
-				gltf.scene.receiveShadow = true;
-				gltf.scene.traverse( function ( child ) {
-					
-					if ( child.isMesh ) {
-						child.castShadow = true;
-						child.receiveShadow = true;
-					}
-					if(child instanceof THREE.Mesh){
-						child.material.emissiveIntensity = 0.2;
-					
-					}childdd=child;
-				} );
-				scene.add( gltf.scene );
-				childd=gltf.scene;
-				console.log(gltf);
-				addGUIGLTF();
-				gltf.animations; // Array<THREE.AnimationClip>
-				gltf.scene; // THREE.Group
-				gltf.scenes; // Array<THREE.Group>
-				gltf.cameras; // Array<THREE.Camera>
-				gltf.asset; // Object
-
-				
-				resolve(gltf);
-	
-			},
-			// called while loading is progressing
-			function ( xhr ) {
-	
-				console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-	
-			},
-			// called when loading has errors
-			function ( error ) {
-	
-				console.log( 'An error happened' );
-				reject(error);
-			});	
-	});
-}
-function addGUIGLTF(){//Create animated sky
-	
-	
-	
-	var guigltf = gui.addFolder('GLTF');
-	guigltf.add(childdd.material, 'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
-		
-		childd.traverse( function ( child ) {
-					
-			if ( child.isMesh ) {
-				child.castShadow = true;
-				child.receiveShadow = true;
-			}
-			if(child instanceof THREE.Mesh){
-				
-				
-				child.material.emissiveIntensity = val;
-			}
-		});
-	}).name('Intensity');
-	guigltf.addColor(childdd.material, 'emissive').onChange(function (val) {
-		
-		childd.traverse( function ( child ) {
-					
-			if ( child.isMesh ) {
-				child.castShadow = true;
-				child.receiveShadow = true;
-			}
-			if(child instanceof THREE.Mesh){
-				
-				child.material.emissive=val;
-				
-			}
-		});
-	}).name('Emissive');
-
-	
-	guigltf.add(childdd.material,'emissiveIntensity').min(0).max(1).step(0.1).onChange(function (val) {
-		
-		
-		childd.traverse( function ( child ) {
-					
-			if ( child.isMesh ) {
-				child.castShadow = true;
-				child.receiveShadow = true;
-			}
-			if(child instanceof THREE.Mesh){
-				
-				
-				child.material.matcap = val;
-			}
-		});
-	}).name('Map');
-	
-	
-}
 
 function displayWindowSize(){
 	// Get width and height of the window excluding scrollbars
@@ -522,10 +568,8 @@ function render()
 {
 	const delta = clock.getDelta();
 	//Para la animacion
-	if ( mixer ) mixer.update( delta );
-	if ( mixer2 ) mixer2.update( delta );
-	if ( mixerCap ) mixerCap.update( delta );
 	
+	TweenUmd.update();
 	
 }
 
