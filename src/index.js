@@ -55,13 +55,13 @@ var materialFolder = [];
 var meshMatcapMaterialFolder =[];
 var data = [];
 
-//fireflies Tween
+//******************************************************************************************fireflies Tween
 
 var camera, scene, renderer, stats;
-var cube = [],cube2= [],cube3;
+var cube = [],cube2= [];
 var easing	=  TweenUmd.Easing.Quadratic.InOut ;
-var delay= 0;
-var duration=2500;
+var delay= 0;// cuanto tiempo tarda en iniciar el movimiento
+var duration=2500;//cuanto tiempo dura el movimiento
 var range=8;
 
 var current= [];
@@ -193,10 +193,10 @@ function setupTween()
 
 	 update	= function(){
 		for (let index = 1; index < total; index++) {
-			
 			cube[index].position.x = current[index].x;
 			cube[index].position.y = current[index].y;
 			cube[index].position.z = current[index].z;
+
 			cube2[index].position.x = current[index].x;
 			cube2[index].position.y = current[index].y;
 			cube2[index].position.z = current[index].z;
@@ -207,7 +207,8 @@ function setupTween()
 	TweenUmd.removeAll();
 	for (let index = 1; index < total; index++) {
 
-		 current	[index]= { x:  -24, y:  26, z:  -range*index };
+		 current	[index]= { x:  -24, y:  26, z:  -range*index };// ubicacion inicial de las dos esferas
+		 
 		 
 		if(index<5)
 		{
@@ -392,10 +393,6 @@ function init()
 		
 	
 	
-	//Lights
-	// spotLight = new THREE.SpotLight( 0xffff00 );
-//	light = new THREE.AmbientLight( obj.color0 ); // soft white light
-	//hemisLight = new THREE.HemisphereLight( obj.color0, obj.colorg, 1 );
 	
 
 	stats = new Stats();
@@ -459,76 +456,34 @@ function main() {
     plane.rotation.x = - Math.PI / 2;
     plane.receiveShadow = true;
 	scene.add( plane );
-
+/******************************************************************************************************************************** */
 for (let index = 1; index < total; index++) {
 	
 	cube[index]	= new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 10 ), new THREE.MeshBasicMaterial() );
-	cube[index].position.set(-24,26,range[index]);
+	
 	scene.add( cube[index] );
 
 	cube2[index]	= new THREE.Mesh( new THREE.SphereGeometry( 1.5, 10, 10 ), new THREE.MeshBasicMaterial({ color: "white", transparent:true, opacity:0.50 }) );
-	cube2[index].position.set(-24,26,range[index]);
+	
 	scene.add( cube2[index] );
 }
 setupTween();
-
-	
-	
-	addLights();
-
-
+addLights();
+/*********************************************************************************************************** */	
 	
 	
 
+
 	
-	addSkybox();
+	
 	addGUI();
 	
 
-	//addGUISkybox();
-     
 	
 	
 }
  
 
-function addSkybox(){//Create animated sky
-
-	//create video
-	var video= document.createElement('video');
-	video.load();
-	video.autoplay= true;
-	video.needsUpdate= true;
-	video.loop	= true;
-	//choose the video
-	video.src	= "../client/js/images/Sky.mp4";
-	//video.src	= "../client/js/images/Lluvia.mp4";
-	//video.src	= "../client/js/images/Amanecer.mp4";
-	
-	var texture = new THREE.VideoTexture( video );
-
-    var skyGeo;
-    //add sphere
-	skyGeo=	new THREE.SphereGeometry( 300, 30, 30 );
-	
-	//adding the video to the sphere
- 	//var material = new THREE.MeshBasicMaterial({ map: texture,});
-     materiall = new THREE.MeshStandardMaterial( {
-
-    //color: 0xffffff,
-
-    roughness: 1,
-    metalness: 1,
-    map: texture,
-
-    } );
-	var Skybox = new THREE.Mesh(skyGeo, materiall);
-	// put the video both sides of the sphere
-	Skybox.material.side = THREE.DoubleSide;
-	//Skybox.Side = THREE.DoubleSide;
-	//add sky
-	scene.add(Skybox);
-}
     
 
 function displayWindowSize(){
@@ -536,18 +491,16 @@ function displayWindowSize(){
 	var w = document.documentElement.clientWidth;
 	var h = document.documentElement.clientHeight;
 	
-	// Display result inside a div element
-	// console.log("Width: " + w + ", " + "Height: " + h);
+	
 	renderer.setSize(w, h);
-	// camera.fov = Math.atan(window.innerHeight / 2 / camera.position.z) * 2 * THREE.Math.RAD2DEG;
+	
 	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
 }
 
 // Attaching the event listener function to window's resize event
 window.addEventListener("resize", displayWindowSize);
-// document.addEventListener( 'keydown', onKeyDown, false );
-// document.addEventListener( 'keyup', onKeyUp, false );
+
 
 function animate() 
 {
@@ -560,7 +513,7 @@ function animate()
   stats.update();
   var dt = clock.getDelta();
   
-  //controls.update();
+ 
 }
 
 
@@ -569,7 +522,7 @@ function render()
 	const delta = clock.getDelta();
 	//Para la animacion
 	
-	TweenUmd.update();
+	TweenUmd.update();//********************************************************************************************************************** */
 	
 }
 
