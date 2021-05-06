@@ -55,8 +55,8 @@ var INTERSECTED = null;
 var raycaster = new THREE.Raycaster();
 
 raycaster.params.Points.threshold = 0.9;
-var imageData = 'https://s3.amazonaws.com/assets-test-o-zone/assets/textures/particle2.png';
-var rectangle = 'https://s3.amazonaws.com/assets-test-o-zone/assets/textures/particle2.png';
+var imageData = '../client/js/images/particle2.png';
+
 var partic;
 var interactables = [];
 var particleSystem;
@@ -88,7 +88,7 @@ var geometry = new THREE.BufferGeometry();
 var textureLoader = new THREE.TextureLoader();
 
 		
-var sprite2 = textureLoader.load( "https://s3.amazonaws.com/assets-test-o-zone/assets/textures/particle2.png");
+var sprite2 = textureLoader.load( "../client/js/images/particle2.png");
 	
 vertices.push( 0, 0, 0);
 var sprite_1;
