@@ -75,7 +75,7 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:50,
+	total:500000,
 	blending:  true,
 	depthTest: true,
 	radio: 10,
