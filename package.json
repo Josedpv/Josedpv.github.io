@@ -23,6 +23,9 @@
   "dependencies": {
     "camera-controls": "^1.21.0",
     "dat.gui": "^0.7.7",
+    "mysql": "^2.18.1",
+    "net": "^1.0.2",
+    "rest-mssql-nodejs": "^1.0.10",
     "run": "^1.4.0",
     "stats.js": "^0.17.0"
   },

@@ -1,7 +1,20 @@
 const path = require('path');
+const webpackConfig = {
+  target: 'node',
+  node: {
+    fs: 'empty',
+}
+};
+module.exports = webpackConfig;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
-  mode: 'development',
+  mode: 'development',   node: {
+    child_process: 'empty',
+    fs: 'empty',
+    crypto: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
   entry: './src/index.js',
   output: {
     filename: 'main.js',

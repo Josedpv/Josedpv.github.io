@@ -1,9 +1,28 @@
 //Dependencies Webpack  and threeJS, npm install webpack webpack-cli, npm install threeJS
 // npm run-script build to compile, work on this file.
 // dont change package.json
- 
+/*
+ const  {config} = require('../src/config');
 
+const rest = new (require('rest-mssql-nodejs'))({
+    user: config.user,
+    password: config.password,
+    server: config.server,
+    database:  config.database,
+    encrypt:  true,
+    
+})
+
+ setTimeout(async() => {
+	 const resultado = await rest.executeQuery('select * from prueba');
+	 console.log(resultado.data);
+ },1500 );*/
+ 
+ 
 //Llamada de la librerias
+
+//import { porfin } from './coneccion';
+
 const THREE = require('three');
 // CommonJS:
 const dat = require('dat.gui');
@@ -17,13 +36,9 @@ const Stats = require('stats.js');
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //Model loaders
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-//Basis Texture loader
-import { BasisTextureLoader } from 'three/examples/jsm/loaders/BasisTextureLoader.js';
+
 //import {} from "./rain";
-import CameraControls from 'camera-controls';
+//import CameraControls from 'camera-controls';
 //import {initRainParticle} from "./rain";
 // CameraControls.install( { THREE: THREE } );
 const canvas = document.getElementById('canvas');
@@ -31,8 +46,8 @@ const clock = new THREE.Clock();
  // Optional: Pre-fetch Draco WASM/JS module.
 // dracoLoader.preload();
 //Scene and render
-var renderer, bgScene, camera, cameraControls;
-export var scene;
+var renderer, camera, cameraControls;
+ var scene;
 var bgMesh;
 var engine;
 var controls;
@@ -43,7 +58,7 @@ var spotLightHelper;
 //Skybox
 var materiall;
 var Skybox;
-var video=[];
+var video;
 //Interface
 var gui;
 var obj;
@@ -75,7 +90,7 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:500000,
+	total:1000000,
 	blending:  true,
 	depthTest: true,
 	radio: 10,
@@ -214,8 +229,8 @@ function addGUI()
 	//particulas sphere
 	var guiparameters = gui.addFolder('Particle System');
 
-				
-			/*
+				/*
+			
 				guiparameters.add( params, 'total' ).min(0).max(1100000).step(1).onChange( function ( value ) {
 					for ( let j = 0; j < params.total; j++ ) {
 					
@@ -241,10 +256,10 @@ function addGUI()
 
 				} );
 				
-			*/
+			
 			
 
-			guiparameters.open();	
+			guiparameters.open();	*/
 	
 }
 
