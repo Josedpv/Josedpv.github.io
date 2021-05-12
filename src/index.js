@@ -646,7 +646,8 @@ function raycast() {
 					sprite_2.scale.set(scale, scale, 1);
 					sprite_3.scale.set(scale, scale, 1);
 			//	}
-				
+			if(INTERSECTED.children[0]){INTERSECTED.remove(INTERSECTED.children[0]);}
+			
 				partic.object.add(sprite_1);
 				//partic.object.add(sprite_2);
 				//partic.object.add(sprite_3);
