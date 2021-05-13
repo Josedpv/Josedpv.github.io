@@ -76,6 +76,7 @@ var partic;
 var interactables = [];
 var particleSystem;
 var link_href ="https://www.google.com/";
+
 				
 				var nombre = "Jose Perez";
 
@@ -521,7 +522,7 @@ var espacio=10;
 					
 				 allParticles[j] = { name: j, position: new THREE.Vector3(  Math.cos(Math.PI*i/params.radio ) * params.radio, 0, Math.sin(Math.PI*i/params.radio ) *  params.radio ),link : document.createElement('a') };
 				 allParticles[j].link.href = link_href;
-		
+				 allParticles[j].link.target = "_blank";
 					j++;
 				}
 				j--;
