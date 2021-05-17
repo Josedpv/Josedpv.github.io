@@ -1,15 +1,20 @@
-### DOMEVIDEOPLAYER
- * DOMEVIDEOPLAYER [Demo](). 
+### Particle System
+ * Particle System
 ####  1 - Dependencies
 
-
+* MySql
 * Webpack
-* Babel
 * Three.js
-* GLTF Models Loader
 
- ####  2 - Run project
-In the Terminal execute command to resolve dependencies:
+ #### 2 - Run Data Base
+ In the Terminal execute command:
+...
+
+  cd src
+...
+  node demo_create_db
+ ####  3 - Run project
+In another Terminal execute command to resolve dependencies:
 ```
 npm i
 ```
