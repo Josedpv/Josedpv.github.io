@@ -31,7 +31,7 @@ const Stats = require('stats.js');
       //import { Examples, ParticleEngine } from 'js/ParticleEngine.js';
      /*****************************FINISH ADDED CODE**************/
 
-
+	 import  TweenUmd, {  Tween, TWEEN } from './client/js/TWEEN/Tween.umd.js';
 
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -91,13 +91,15 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:500000,
+	total:5000,
 	blending:  true,
 	depthTest: true,
 	radio: 10,
-	grado: 6
-
+	grado: 6,
+	totales:1,
+	
 };
+var buscado = null;
 var scaleVector = new THREE.Vector3();
 var geometry = new THREE.BufferGeometry();
 
@@ -107,9 +109,14 @@ var textureLoader = new THREE.TextureLoader();
 var sprite2 = textureLoader.load( "../client/js/images/particle2.png");
 	
 vertices.push( 0, 0, 0);
-var sprite_1;
-var sprite_2 ;
-var sprite_3 ;
+var sprite_1=null;
+var sprite_2=null ;
+var sprite_3=null ;
+var sprite_1_buscado;
+var sprite_2_buscado ;
+var sprite_3_buscado ;
+var to_look_outside;
+//var to_look_go = 0;
 /*puede= true;
 for ( let j = 0; j < params.total; j ++ ) {
 	cant_cir++;
@@ -129,6 +136,54 @@ for ( let j = 0; j < params.total; j ++ ) {
 
 
 geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+
+
+var easing	=  TweenUmd.Easing.Quadratic.InOut ;
+var delay= 0;// cuanto tiempo tarda en iniciar el movimiento
+var duration=2500;//cuanto tiempo dura el movimiento
+var range=8;
+
+var current;
+
+var tweenHead;
+
+var update	;
+function Circular(to_look_go){
+	tweenHead= new  TweenUmd.Tween(current)
+	.to({x:10+allParticles[to_look_go].position.x,y:10+allParticles[to_look_go].position.y,z: 10+allParticles[to_look_go].position.z},  duration)
+	.delay( delay)
+	.easing(easing)
+	.onUpdate(update);
+
+	tweenHead.start();
+}
+
+function setupTween()
+{
+
+	 update	= function(){
+		
+			camera.position.x = current.x;
+			camera.position.y = current.y;
+			camera.position.z = current.z;
+			camera.lookAt( current.x ,current.y ,current.z  );
+	}
+	TweenUmd.removeAll();
+	
+
+		 current = { x:  camera.position.x , y: camera.position.y, z:  camera.position.z };// ubicacion inicial de las dos esferas
+		 
+		 
+	
+			
+			
+		
+}
+ 
+
+
+
 
 /*for ( let j = 0; j < params.total; j ++ ) {
 geometry[j];
@@ -221,7 +276,42 @@ function addLights()
 	light.position.set(0,250,0);
 	//scene.add(light);
 }
+function buscar(to_look){
+	to_look_outside=to_look;
+	
+	if(sprite_1_buscado){scene.remove(sprite_1_buscado);}
+	//camera.position.x=10+allParticles[to_look].position.x;
+	
+	//camera.position.z=10+ allParticles[to_look].position.z;
+	//camera.position.y=10+ allParticles[to_look].position.y;
+	//camera.lookAt( allParticles[to_look].position.x, allParticles[to_look].position.y, allParticles[to_look].position.z );
+	sprite_1_buscado= makeTextSprite( " "+(to_look +1)+ "  ", { fontsize: 24}  );//( " "+(partic.index +1)+ "  ");
+	sprite_2_buscado=makeText(link_href);
+	sprite_3_buscado=makeText( "  "+nombre+" ");
+	//if((0<=partic.index)&&partic.index<=params.total){	
+		//console.log( 'got a click on particle', partic.index  );
+		sprite_1_buscado.position.x= allParticles[to_look].position.x;
+		sprite_1_buscado.position.y= 1;
+		sprite_1_buscado.position.z= allParticles[to_look].position.z;
+		sprite_2_buscado.position.x= allParticles[to_look].position.x;
+		sprite_2_buscado.position.y= 2;
+		sprite_2_buscado.position.z= allParticles[to_look] .position.z;
+		sprite_3_buscado.position.x= allParticles[to_look].position.x;
+		sprite_3_buscado.position.y= 3;
+		sprite_3_buscado.position.z= allParticles[to_look] .position.z;
+		var scaleFactor = 9;
+		var scale = scaleVector.subVectors(allParticles[to_look].position, camera.position).length() / scaleFactor;
 
+		sprite_1_buscado.scale.set(scale, scale, 1);
+		sprite_2_buscado.scale.set(scale, scale, 1);
+		sprite_3_buscado.scale.set(scale, scale, 1);
+		Circular(to_look_outside);//movimiento circular
+		
+//	}
+
+
+scene.add(sprite_1_buscado);
+}
 function addGUI() 
 {
 	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -230,37 +320,18 @@ function addGUI()
 	//particulas sphere
 	var guiparameters = gui.addFolder('Particle System');
 
-				/*
+				
 			
-				guiparameters.add( params, 'total' ).min(0).max(1100000).step(1).onChange( function ( value ) {
-					for ( let j = 0; j < params.total; j++ ) {
-					
-						
-					
-						scene.remove( allParticles[j] );
-						
-						
-						
-				}
-				
-				
-    
-				
-				scene.remove( particleSystem );
-				
-					
-					
-					
-				
-					//vertices.pop;
-					particulas();
+				guiparameters.add( params, 'totales' ).min(0).max(5000).step(1).onChange( function ( value ) {
+
+					buscar(value-1);
 
 				} );
 				
 			
 			
 
-			guiparameters.open();	*/
+			guiparameters.open();	
 	
 }
 
@@ -281,13 +352,13 @@ document.body.appendChild( renderer.domElement );
 	camera.position.x = 1000;
 	camera.position.y = 1000;
 	camera.position.z = 1000;
-	camera.lookAt( 0, 0.1, 0 );
+	//camera.lookAt( 0, 0.1, 0 );
     controls = new OrbitControls( camera, renderer.domElement );
 	addLights();
 	addGUI() ;
 	
     particulas();
-
+	setupTween();
 	
 	
 
@@ -296,9 +367,9 @@ document.body.appendChild( renderer.domElement );
 
 	 
 	 
+	 renderer.domElement.addEventListener( 'click', onMouseClick );
 
-
-	renderer.domElement.addEventListener( 'dblclick', onMouseClick );
+	renderer.domElement.addEventListener( 'dblclick', onMousedblClick );
 	renderer.domElement.addEventListener( 'mousemove', onMouseMove );
 
    
@@ -427,10 +498,10 @@ function displayWindowSize(){
 	var h = document.documentElement.clientHeight;
 	
 	
-	renderer.setSize(w, h);
+	//renderer.setSize(w, h);
 	
-	camera.aspect = w / h;
-	camera.updateProjectionMatrix();
+	//camera.aspect = w / h;
+	//camera.updateProjectionMatrix();
 	
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
@@ -442,6 +513,10 @@ function displayWindowSize(){
 window.addEventListener("resize", displayWindowSize);
 
 function onMouseClick( event ) {
+
+	if(sprite_1_buscado){scene.remove(sprite_1_buscado);to_look_outside=null}
+}
+function onMousedblClick( event ) {
 
 	if ( INTERSECTED !== null )partic.object.userData.particles[ partic.index ].link.click(); 
 }
@@ -462,7 +537,7 @@ function animate()
   
   render();
   renderer.render(scene, camera);
- 
+  
   stats.update();
   var dt = clock.getDelta();
  
@@ -574,7 +649,7 @@ var espacio=10;
 
 			function render() {
 
-			
+				TweenUmd.update();//********************************************************************************************************************** */
 			
 				raycast();
 				renderer.render( scene, camera );
@@ -587,10 +662,17 @@ function raycast() {
 	var intersects  ;
 	
 	
-  
+	var scaleFactor = 9;
+	if(to_look_outside){var scale = scaleVector.subVectors(allParticles[to_look_outside].position, camera.position).length() / scaleFactor;
+		controls.update();
+		camera.lookAt( allParticles[to_look_outside].position.x, allParticles[to_look_outside].position.y, allParticles[to_look_outside].position.z );
+		sprite_1_buscado.scale.set(scale, scale, 1);
+		sprite_2_buscado.scale.set(scale, scale, 1);
+		sprite_3_buscado.scale.set(scale, scale, 1);
+	}
 	  
-	  
-  
+	
+	
   
 	
   intersects =  raycaster.intersectObject( particleSystem, true );
@@ -600,6 +682,7 @@ function raycast() {
   
 	
 			if ( intersects.length > 0 ) {
+				
 				if(INTERSECTED != intersects[ 0 ].object){
 					  if(INTERSECTED){// intersected has an object but the user is not hovering an object anymore
 						  //intersect=INTERSECTED;
@@ -640,13 +723,16 @@ function raycast() {
 					sprite_3.position.x= allParticles[partic.index].position.x;
 					sprite_3.position.y= 3;
 					sprite_3.position.z= allParticles[partic.index] .position.z;
-					var scaleFactor = 9;
+					 scaleFactor = 9;
 					var scale = scaleVector.subVectors(allParticles[partic.index].position, camera.position).length() / scaleFactor;
 
 					sprite_1.scale.set(scale, scale, 1);
 					sprite_2.scale.set(scale, scale, 1);
 					sprite_3.scale.set(scale, scale, 1);
 			//	}
+
+			
+			
 			if(INTERSECTED.children[0]){INTERSECTED.remove(INTERSECTED.children[0]);}
 			
 				partic.object.add(sprite_1);
@@ -667,6 +753,7 @@ function raycast() {
 				 // sprite_2=null;
 				 // sprite_3=null;
 			  INTERSECTED=null;
+			  //buscado= null;
 			  //partic=null;
 			  
 			}
