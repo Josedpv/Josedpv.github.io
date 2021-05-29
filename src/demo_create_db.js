@@ -32,7 +32,7 @@ con.connect(function(err) {
 	  console.log("Table created");
 	});
  
-	var sql = "INSERT INTO customers (ID,name, address) VALUES ('5','Robert Perez', 'https://www.google.com/')";
+	var sql = "INSERT INTO customers (ID,name, address) VALUES ('7','MrO', 'https://www.google.com/')";
 	con.query(sql, function (err, result) {
 		if (err) throw err;
 		console.log("1 record inserted");
