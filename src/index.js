@@ -20,7 +20,150 @@ const rest = new (require('rest-mssql-nodejs'))({
  
  
 //Llamada de la librerias
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('http://localhost:5000/getAll')
+    .then(response => response.json())
+    .then(data => loadHTMLTable(data['data']));
+    
+});
 
+// document.querySelector('table tbody').addEventListener('click', function(event) {
+//     if (event.target.className === "delete-row-btn") {
+//         deleteRowById(event.target.dataset.ID);
+//     }
+//     if (event.target.className === "edit-row-btn") {
+//         handleEditRow(event.target.dataset.ID);
+//     }
+// });
+
+// const updateBtn = document.querySelector('#update-row-btn');
+
+const searchBtn = document.querySelector('#search-btn');
+
+searchBtn.onclick = function() {
+    const tableSection = document.querySelector('#table');
+    tableSection.hidden = false;
+    const searchValue = document.querySelector('#search-input').value;
+
+    fetch('http://localhost:5000/search/' + searchValue)
+    .then(response => response.json())
+    .then(data => loadHTMLTable(data['data']));
+}
+
+// function deleteRowById(ID) {
+//     fetch('http://localhost:5000/delete/' + ID, {
+//         method: 'DELETE'
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             location.reload();
+//         }
+//     });
+// }
+
+// function handleEditRow(ID) {
+//     const updateSection = document.querySelector('#update-row');
+//     updateSection.hidden = false;
+//     document.querySelector('#update-name-input').dataset.ID = ID;
+// }
+
+// updateBtn.onclick = function() {
+//     const updateNameInput = document.querySelector('#update-name-input');
+
+
+//     console.log(updateNameInput);
+
+//     fetch('http://localhost:5000/update', {
+//         method: 'PATCH',
+//         headers: {
+//             'Content-type' : 'application/json'
+//         },
+//         body: JSON.stringify({
+//             ID: updateNameInput.dataset.ID,
+//             name: updateNameInput.value
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             location.reload();
+//         }
+//     })
+// }
+
+
+// const addBtn = document.querySelector('#add-name-btn');
+
+// addBtn.onclick = function () {
+//     const nameInput = document.querySelector('#name-input');
+//     const name = nameInput.value;
+//     nameInput.value = "";
+
+//     fetch('http://localhost:5000/insert', {
+//         headers: {
+//             'Content-type': 'application/json'
+//         },
+//         method: 'POST',
+//         body: JSON.stringify({ name : name})
+//     })
+//     .then(response => response.json())
+//     .then(data => insertRowIntoTable(data['data']));
+// }
+
+// function insertRowIntoTable(data) {
+//     console.log(data);
+//     const table = document.querySelector('table tbody');
+//     const isTableData = table.querySelector('.no-data');
+
+//     let tableHtml = "<tr>";
+
+//     for (var key in data) {
+//         if (data.hasOwnProperty(key)) {
+//             if (key === 'dateAdded') {
+//                 data[key] = new Date(data[key]).toLocaleString();
+//             }
+//             tableHtml += `<td>${data[key]}</td>`;
+//         }
+//     }
+
+//     tableHtml += `<td><button class="delete-row-btn" data-id=${data.ID}>Delete</td>`;
+//     tableHtml += `<td><button class="edit-row-btn" data-id=${data.ID}>Edit</td>`;
+
+//     tableHtml += "</tr>";
+
+//     if (isTableData) {
+//         table.innerHTML = tableHtml;
+//     } else {
+//         const newRow = table.insertRow();
+//         newRow.innerHTML = tableHtml;
+//     }
+// }
+var porfin;
+
+function loadHTMLTable(data) {
+    const table = document.querySelector('table tbody');
+
+    if (data.length === 0) {
+        table.innerHTML = "<tr><td class='no-data' colspan='5'>No Data</td></tr>";
+        return;
+    }
+
+    let tableHtml = "";
+
+    data.forEach(function ({ID, name, address}) {
+		porfin = ID;
+		buscar(ID-1);
+        tableHtml += "<tr>";
+        tableHtml += `<td>${ID}</td>`;
+        tableHtml += `<td>${name}</td>`;
+        tableHtml += `<td>${address}</td>`;
+        // tableHtml += `<td><button class="delete-row-btn" data-id=${ID}>Delete</td>`;
+        // tableHtml += `<td><button class="edit-row-btn" data-id=${ID}>Edit</td>`;
+        tableHtml += "</tr>";
+    });
+
+    table.innerHTML = tableHtml;}
 //import { porfin } from './coneccion';
 
 const THREE = require('three');
@@ -91,7 +234,7 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:5000,
+	total:250000,
 	blending:  true,
 	depthTest: true,
 	radio: 10,
@@ -322,9 +465,10 @@ function addGUI()
 
 				
 			
-				guiparameters.add( params, 'totales' ).min(0).max(5000).step(1).onChange( function ( value ) {
-
+				guiparameters.add( params, 'totales' ).min(0).max(500000).step(1).onChange( function ( value ) {
+					console.log(porfin);
 					buscar(value-1);
+					
 
 				} );
 				
@@ -579,25 +723,33 @@ center.position.y = 0;
 center.position.z = 0;
 scene.add(center);
 var espacio=10;
+var salto= true;
+var numero_espacio = 0;
 			for ( let j = 0; j < params.total; j ++ ) {
 					cant_cir++;
-					if(cant_cir%espacio==0){
+					/*if(cant_cir%espacio==0){
 						params.radio=params.radio+espacio;
 						espacio=espacio*2;
 
-					}
-					params.radio=params.radio+10;
-					
-				for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
+					}*/
+					params.radio=params.radio+30;
+					salto = true;
+				//for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
+				//for ( let i = 0; i < salto && (j <  params.total); i ++) {
 
-
+				for ( let i = 0; salto &&( (i < (params.radio*2) )&& (j <  params.total)); i ++) {
 				
-
+					
+					
+					//if(435001 > i && i> 0){var uniqueColor = new THREE.Color( "fuchsia" );}
 
 					
 				 allParticles[j] = { name: j, position: new THREE.Vector3(  Math.cos(Math.PI*i/params.radio ) * params.radio, 0, Math.sin(Math.PI*i/params.radio ) *  params.radio ),link : document.createElement('a') };
 				 allParticles[j].link.href = link_href;
 				 allParticles[j].link.target = "_blank";
+				 if(j== 499749||j== 499499||j== 497499||j== 494999||j== 469999||j== 434999||j== 374999||j== 299999||j== 199999){salto = false;
+					espacio=100;params.radio=params.radio+espacio;
+				}
 					j++;
 				}
 				j--;
@@ -615,7 +767,7 @@ var espacio=10;
 						size: 5,
 						transparent: false,
 						//sizeAttenuation: false,
-						//vertexColors: THREE.VertexColors,
+						vertexColors: THREE.VertexColors,
 						blending: THREE.AdditiveBlending,
 						 depthTest: false,
 					});
@@ -623,19 +775,31 @@ var espacio=10;
 					particleSystem = new THREE.Points( particles, pMaterial );
 					particleSystem.name = "cumeda";
 					particleSystem.userData.particles = []; // to keep track of particles
-		
+					var color_particle = 1;
 					allParticles.forEach( function( particle ) {
+						
+						if(color_particle>= 499751){var uniqueColor = new THREE.Color( "green" );}
+						if(499750 >= color_particle && color_particle>= 499501){var uniqueColor = new THREE.Color( "yellow" );}
+						if(499500 >= color_particle && color_particle>= 497501){var uniqueColor = new THREE.Color( "fuchsia" );}
+						if(497500 >= color_particle && color_particle>= 470001){var uniqueColor = new THREE.Color( "yellow" );}
+						if(470000 >= color_particle && color_particle>= 435001){var uniqueColor = new THREE.Color( "fuchsia" );}
+						if(435000 >= color_particle && color_particle>= 375001){var uniqueColor = new THREE.Color( "yellow" );}
+						if(375000 >= color_particle && color_particle>= 300001){var uniqueColor = new THREE.Color( "fuchsia" );}
+						if(300000 >= color_particle && color_particle>= 200001){var uniqueColor = new THREE.Color( "yellow" );}
+						if(200000 >= color_particle){var uniqueColor = new THREE.Color( "fuchsia" );}
 						particles.vertices.push( particle.position );
 						// Give each particle its own unique colour ... (we could
 						// do this on-demand as a refinement, perhaps temporarily give
 						// it a different THREE.Color on hover, for example)
-						var uniqueColor = new THREE.Color( 0xFFFFFF );
+						//pMaterial.map = texture;
+						particle.map = texture;
 						particles.colors.push( uniqueColor );
-						particle.uniqueColor = uniqueColor;
+						//particle.uniqueColor = uniqueColor;
 						// Make sure we can later find our particle again
 						particleSystem.userData.particles.push( particle );
+						color_particle++;
 					});
-					
+					//particleSystem.userData.particles[10].map = texture;
 					scene.add( particleSystem );
 				});
 		
