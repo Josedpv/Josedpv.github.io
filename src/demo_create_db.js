@@ -16,23 +16,28 @@ var mysql = require('../node_modules/mysql/index');
 //   });
 
 var con = mysql.createConnection({// connect to database just created
-	host: 'localhost',//'jose'
-	user: "robert",//'jose'
+	host: 'jose',//'jose'
+	user: "jose",//'jose'
 	password: '1234',
-	database: "mydb"//,port: '8889',//jose
+	database: "jose"
+	,port: '3306',//jose
 
 	//socketPath: '/var/run/mysqld/mysqld.sock'
 });
 con.connect(function(err) {
 	if (err) throw err;
 	console.log("Connected!");
-	var sql = "CREATE TABLE IF NOT EXISTS customers (ID INT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
+	var sql = "CREATE TABLE IF NOT EXISTS clients (ID INT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
 	con.query(sql, function (err, result) {
 	  if (err) throw err;
 	  console.log("Table created");
 	});
  
+<<<<<<< Updated upstream
 	var sql = "INSERT INTO customers (ID,name, address) VALUES ('7','MrO', 'https://www.google.com/')";
+=======
+	var sql = "INSERT INTO clients (ID,name, address) VALUES ('3','Jose Perez', 'https://www.youtube.com/')";
+>>>>>>> Stashed changes
 	con.query(sql, function (err, result) {
 		if (err) throw err;
 		console.log("1 record inserted");
