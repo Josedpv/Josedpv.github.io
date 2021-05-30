@@ -4,11 +4,22 @@ let instance = null;
 dotenv.config();
 
 const connection = mysql.createConnection({
-    host: process.env.HOST,
+    host: 'jose',//'jose'
+	user: "jose",//'jose'
+	password: '1234',
+	database: "jose"
+    ,port: '3306',//jose
+/*    host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     port: process.env.DB_PORT
+    PORT=5000
+USER=robert
+PASSWORD=1234
+DATABASE=mydb
+DB_PORT=3306
+HOST=localhost */
 });
 
 connection.connect((err) => {
@@ -27,7 +38,7 @@ class DbService {
     async getAllData() {
         try {
             const response = await new Promise((resolve, reject) => {
-                const query = "SELECT * FROM customers;";
+                const query = "SELECT * FROM clients;";
 
                 connection.query(query, (err, results) => {
                     if (err) reject(new Error(err.message));
@@ -105,7 +116,7 @@ class DbService {
     async searchByName(name) {
         try {
             const response = await new Promise((resolve, reject) => {
-                const query = "SELECT * FROM customers WHERE name = ?;";
+                const query = "SELECT * FROM clients WHERE name = ?;";
 
                 connection.query(query, [name], (err, results) => {
                     if (err) reject(new Error(err.message));
