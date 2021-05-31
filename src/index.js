@@ -1,6 +1,19 @@
 //Dependencies Webpack  and threeJS, npm install webpack webpack-cli, npm install threeJS
 // npm run-script build to compile, work on this file.
 // dont change package.json
+
+// COMMANDS
+// FIRST TERMINAL (to start webpage)
+ // npm i
+ // npm webpack-dev
+ // SECOND TERMINAL (to start DB)
+ // cd src
+ // node app.js
+ // THIRD TERMINAL (to add to the DB)
+ // cd src
+ // node demo_create_db.js
+
+/******************************************************************DATA BASE********************************************/
 /*
  const  {config} = require('../src/config');
 
@@ -20,7 +33,168 @@ const rest = new (require('rest-mssql-nodejs'))({
  
  
 //Llamada de la librerias
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('http://localhost:5000/getAll')
+    .then(response => response.json())
+    .then(data => loadHTMLTable(data['data'], false));
+    
+});
 
+// document.querySelector('table tbody').addEventListener('click', function(event) {
+//     if (event.target.className === "delete-row-btn") {
+//         deleteRowById(event.target.dataset.ID);
+//     }
+//     if (event.target.className === "edit-row-btn") {
+//         handleEditRow(event.target.dataset.ID);
+//     }
+// });
+
+// const updateBtn = document.querySelector('#update-row-btn');
+
+const searchBtn = document.querySelector('#search-btn');
+
+searchBtn.onclick = function() {
+	
+    const tableSection = document.querySelector('#table');
+    tableSection.hidden = false;
+    const searchValue = document.querySelector('#search-input').value;
+	
+    fetch('http://localhost:5000/search/' + searchValue)
+    .then(response => response.json())
+    .then(data => loadHTMLTable(data['data'], true));
+	
+}
+const All = document.querySelector('#All');
+
+All.onclick = function() {
+	fetch('http://localhost:5000/getAll')
+    .then(response => response.json())
+    .then(data => loadHTMLTable(data['data'], false));
+	
+}
+
+
+// function deleteRowById(ID) {
+//     fetch('http://localhost:5000/delete/' + ID, {
+//         method: 'DELETE'
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             location.reload();
+//         }
+//     });
+// }
+
+// function handleEditRow(ID) {
+//     const updateSection = document.querySelector('#update-row');
+//     updateSection.hidden = false;
+//     document.querySelector('#update-name-input').dataset.ID = ID;
+// }
+
+// updateBtn.onclick = function() {
+//     const updateNameInput = document.querySelector('#update-name-input');
+
+
+//     console.log(updateNameInput);
+
+//     fetch('http://localhost:5000/update', {
+//         method: 'PATCH',
+//         headers: {
+//             'Content-type' : 'application/json'
+//         },
+//         body: JSON.stringify({
+//             ID: updateNameInput.dataset.ID,
+//             name: updateNameInput.value
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             location.reload();
+//         }
+//     })
+// }
+
+
+// const addBtn = document.querySelector('#add-name-btn');
+
+// addBtn.onclick = function () {
+//     const nameInput = document.querySelector('#name-input');
+//     const name = nameInput.value;
+//     nameInput.value = "";
+
+//     fetch('http://localhost:5000/insert', {
+//         headers: {
+//             'Content-type': 'application/json'
+//         },
+//         method: 'POST',
+//         body: JSON.stringify({ name : name})
+//     })
+//     .then(response => response.json())
+//     .then(data => insertRowIntoTable(data['data']));
+// }
+
+// function insertRowIntoTable(data) {
+//     console.log(data);
+//     const table = document.querySelector('table tbody');
+//     const isTableData = table.querySelector('.no-data');
+
+//     let tableHtml = "<tr>";
+
+//     for (var key in data) {
+//         if (data.hasOwnProperty(key)) {
+//             if (key === 'dateAdded') {
+//                 data[key] = new Date(data[key]).toLocaleString();
+//             }
+//             tableHtml += `<td>${data[key]}</td>`;
+//         }
+//     }
+
+//     tableHtml += `<td><button class="delete-row-btn" data-id=${data.ID}>Delete</td>`;
+//     tableHtml += `<td><button class="edit-row-btn" data-id=${data.ID}>Edit</td>`;
+
+//     tableHtml += "</tr>";
+
+//     if (isTableData) {
+//         table.innerHTML = tableHtml;
+//     } else {
+//         const newRow = table.insertRow();
+//         newRow.innerHTML = tableHtml;
+//     }
+// }
+
+var id= 1;
+var look = false;
+function loadHTMLTable(data, to) {
+	look = to;
+    const table = document.querySelector('table tbody');
+
+    if (data.length === 0) {
+        table.innerHTML = "<tr><td class='no-data' colspan='5'>No Data</td></tr>";
+        return;
+    }
+
+    let tableHtml = "";
+
+    data.forEach(function ({ID, name, address}) {
+		id = ID;
+		
+        tableHtml += "<tr>";
+        tableHtml += `<td>${ID}</td>`;
+        tableHtml += `<td>${name}</td>`;
+        tableHtml += `<td>${address}</td>`;
+        // tableHtml += `<td><button class="delete-row-btn" data-id=${ID}>Delete</td>`;
+        // tableHtml += `<td><button class="edit-row-btn" data-id=${ID}>Edit</td>`;
+        tableHtml += "</tr>";
+    });
+	data.forEach(function ({ID, name, address}) {
+		link_href[ID] = address;
+        nombre[ID] = name;
+    });
+	if(look){buscar(id-1); }
+		
+    table.innerHTML = tableHtml;}
 //import { porfin } from './coneccion';
 
 const THREE = require('three');
@@ -31,12 +205,12 @@ const Stats = require('stats.js');
       //import { Examples, ParticleEngine } from 'js/ParticleEngine.js';
      /*****************************FINISH ADDED CODE**************/
 
-	 import  TweenUmd, {  Tween, TWEEN } from './client/js/TWEEN/Tween.umd.js';
+	 import  TweenUmd from './client/js/TWEEN/Tween.umd.js';
 
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //Model loaders
-
+/******************************************************************GLOBAL VALUES********************************************/
 //import {} from "./rain";
 //import CameraControls from 'camera-controls';
 //import {initRainParticle} from "./rain";
@@ -48,23 +222,18 @@ const clock = new THREE.Clock();
 //Scene and render
 var renderer, camera, cameraControls;
  var scene;
-var bgMesh;
-var engine;
+
 var controls;
-var mixer, mixer2,mixerCap;
+
 //Lights
 var spotLight, light, hemisLight;
-var spotLightHelper;
-//Skybox
-var materiall;
-var Skybox;
-var video;
+
+
 //Interface
 var gui;
 var obj;
 var stats;
-var childd=[];
-var childdd;
+
 //DownLoader
 var INTERSECTED = null;
 var raycaster = new THREE.Raycaster();
@@ -75,23 +244,20 @@ var imageData = '../client/js/images/particle2.png';
 var partic;
 var interactables = [];
 var particleSystem;
-var link_href ="https://www.google.com/";
+var link_href =[];
 
 				
-				var nombre = "Jose Perez";
+				var nombre = [];
 
 var mouse = new THREE.Vector2( Infinity, Infinity );
-const group = new THREE.Object3D();
-var Gltf_number=0;
-var indexmodel=0;
-var particles_mine=[];
-//var particles=[];
+
 var vertices = [];
 var puede= false;
+/******************************************************************PARTICLES PARAMETERS********************************************/
 const params = {
 	texture: true,
 	visible:true,
-	total:5000,
+	total:500000,// PARTICLES TOTAL
 	blending:  true,
 	depthTest: true,
 	radio: 10,
@@ -99,6 +265,16 @@ const params = {
 	totales:1,
 	
 };
+var  parameters;
+
+
+
+
+	
+
+	var allParticles = [
+		
+	];
 var buscado = null;
 var scaleVector = new THREE.Vector3();
 var geometry = new THREE.BufferGeometry();
@@ -107,7 +283,7 @@ var textureLoader = new THREE.TextureLoader();
 
 		
 var sprite2 = textureLoader.load( "../client/js/images/particle2.png");
-	
+	// SPRITEES
 vertices.push( 0, 0, 0);
 var sprite_1=null;
 var sprite_2=null ;
@@ -116,28 +292,12 @@ var sprite_1_buscado;
 var sprite_2_buscado ;
 var sprite_3_buscado ;
 var to_look_outside;
-//var to_look_go = 0;
-/*puede= true;
-for ( let j = 0; j < params.total; j ++ ) {
-	cant_cir++;
-	params.radio[cant_cir]=params.radio[cant_cir-1]*cant_cir;
-	
-	for ( let i = 0; i < (params.radio[cant_cir]*2) && (j <  params.total) ; i ++ ) {
 
-	
-		const x = Math.cos(Math.PI*i/params.radio[cant_cir] ) * params.radio[cant_cir];//6 params.grado
-		
-		const z =Math.sin(Math.PI*i/params.radio[cant_cir] ) *  params.radio[cant_cir];
-		vertices.push( x, 0, z );
-		j++;
-	}
-	
-}*/
 
 
 geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 
-
+/******************************************************************TWEEN********************************************/
 
 var easing	=  TweenUmd.Easing.Quadratic.InOut ;
 var delay= 0;// cuanto tiempo tarda en iniciar el movimiento
@@ -185,31 +345,12 @@ function setupTween()
 
 
 
-/*for ( let j = 0; j < params.total; j ++ ) {
-geometry[j];
-geometry[j].link = document.createElement('a');
-
-geometry[j].link.href = "https://www.youtube.com/";
-}*/
-/*
-
 parameters = [
-	[[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
-	[[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
-	[[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
-	[[ 0.85, 0, 0.5 ], sprite5, 8 ],
-	[[ 0.80, 0, 0.5 ], sprite4, 5 ]
-];*/
-parameters = [
-	[[ 1.0, 0.2, 0.5 ], sprite2, 4 ]/*,
-	[[ 0.95, 0.1, 0.5 ], sprite3, 5 ],
-	[[ 0.90, 0.05, 0.5 ], sprite1, 5 ],
-	[[ 0.85, 0, 0.5 ], sprite5, 5 ],
-	[[ 0.80, 0, 0.5 ], sprite4, 5 ]*/
+	[[ 1.0, 0.2, 0.5 ], sprite2, 4 ]
 ];
-//raycaster.params.Points.threshold = parameters[ 0 ][ 2 ];
+
 var color = parameters[ 0 ][ 0 ];
-//var sprite = parameters[ 0 ][ 1 ];
+
 	var size = parameters[ 0 ][ 2 ];
 
 function init() 
@@ -263,19 +404,12 @@ function addLights()
 	//Hemisphere light
 	
 	scene.add( hemisLight );
-	spotLight = new THREE.SpotLight();
-    spotLight.angle = Math.PI / 16;
-    //spotLight.penumbra = 0.5;
-    spotLight.castShadow = true;
-    spotLight.position.set( obj.posX, obj.posY, obj.posZ );
-	//scene.add( spotLight );
-	spotLightHelper = new THREE.SpotLightHelper( spotLight );
-	//scene.add( spotLightHelper );
 	//fireworklight
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
 	//scene.add(light);
 }
+/******************************************************************LOOK WITH TWEEN********************************************/
 function buscar(to_look){
 	to_look_outside=to_look;
 	
@@ -286,52 +420,54 @@ function buscar(to_look){
 	//camera.position.y=10+ allParticles[to_look].position.y;
 	//camera.lookAt( allParticles[to_look].position.x, allParticles[to_look].position.y, allParticles[to_look].position.z );
 	sprite_1_buscado= makeTextSprite( " "+(to_look +1)+ "  ", { fontsize: 24}  );//( " "+(partic.index +1)+ "  ");
-	sprite_2_buscado=makeText(link_href);
-	sprite_3_buscado=makeText( "  "+nombre+" ");
+	sprite_2_buscado=makeText(link_href[to_look+1]);
+	sprite_3_buscado=makeText( "  "+nombre[to_look+1]+" ");
 	//if((0<=partic.index)&&partic.index<=params.total){	
 		//console.log( 'got a click on particle', partic.index  );
 		sprite_1_buscado.position.x= allParticles[to_look].position.x;
 		sprite_1_buscado.position.y= 1;
 		sprite_1_buscado.position.z= allParticles[to_look].position.z;
-		sprite_2_buscado.position.x= allParticles[to_look].position.x;
-		sprite_2_buscado.position.y= 2;
-		sprite_2_buscado.position.z= allParticles[to_look] .position.z;
-		sprite_3_buscado.position.x= allParticles[to_look].position.x;
-		sprite_3_buscado.position.y= 3;
-		sprite_3_buscado.position.z= allParticles[to_look] .position.z;
+		//sprite_2_buscado.position.x= allParticles[to_look].position.x;
+		sprite_2_buscado.position.y= 0.6;
+		//sprite_2_buscado.position.z= allParticles[to_look] .position.z;
+		//sprite_3_buscado.position.x= allParticles[to_look].position.x;
+		sprite_3_buscado.position.y= 0.2;
+		//sprite_3_buscado.position.z= allParticles[to_look] .position.z;
 		var scaleFactor = 9;
 		var scale = scaleVector.subVectors(allParticles[to_look].position, camera.position).length() / scaleFactor;
 
 		sprite_1_buscado.scale.set(scale, scale, 1);
-		sprite_2_buscado.scale.set(scale, scale, 1);
-		sprite_3_buscado.scale.set(scale, scale, 1);
+		
 		Circular(to_look_outside);//movimiento circular
 		
 //	}
-
-
+sprite_2_buscado.add(sprite_3_buscado);
+sprite_1_buscado.add(sprite_2_buscado);
 scene.add(sprite_1_buscado);
+
 }
 function addGUI() 
 {
 	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+	
 	document.body.appendChild( stats.dom );
 	
 	//particulas sphere
-	var guiparameters = gui.addFolder('Particle System');
+	/*var guiparameters = gui.addFolder('Particle System');
 
 				
 			
-				guiparameters.add( params, 'totales' ).min(0).max(5000).step(1).onChange( function ( value ) {
-
+				guiparameters.add( params, 'totales' ).min(0).max(500000).step(1).onChange( function ( value ) {
+					
 					buscar(value-1);
+					
 
 				} );
 				
 			
 			
 
-			guiparameters.open();	
+			guiparameters.open();	*/
 	
 }
 
@@ -375,6 +511,7 @@ document.body.appendChild( renderer.domElement );
    
 	
 }
+/******************************************************************TEXSPRITE********************************************/
 function makeTextSprite( message, parameters)
 {
 	//parameters section
@@ -473,10 +610,10 @@ function makeText( name )
 	canvas.width = 256;
 	canvas.height = 256;
 	var ctx = canvas.getContext("2d");
-	ctx.font = "20pt Arial";
+	ctx.font = "24pt Arial";
 	ctx.fillStyle = "white";
 	ctx.textAlign = "center";
-	ctx.fillText(name, 128, 44);
+	ctx.fillText(name, 128, 44,200);
 	//console.log(ctx);
 	var tex = new THREE.Texture(canvas);
 	tex.needsUpdate = true;
@@ -543,61 +680,58 @@ function animate()
  
 }
 
-//------------------------------------------------------------download
+/******************************************************************PARTICLES********************************************/
 
 
-  var  parameters;
-		//	let mouseX = 0, mouseY = 0;
-
-			//let windowHalfX = window.innerWidth / 2;
-		//	let windowHalfY = window.innerHeight / 2;
-
-			var  materials = [];
-
-			
-
-			var allParticles = [
-				
-			];
-			function particulas() {
+ function particulas() {
 
 			
 				
 				
-				var cant_cir=0;
-				params.radio= 30;
+		var cant_cir=0;
+		params.radio= 30;
 
-vertices.push( 0, 0, 0);
+		vertices.push( 0, 0, 0);
+		//ADDIND MATERIAL OF THE CENTER
 
-var material= new THREE.PointsMaterial( { size: 60,map:sprite2  , blending: THREE.AdditiveBlending, depthTest: params.depthTest, transparent: params.visible } );
+		var material= new THREE.PointsMaterial( { size: 60,map:sprite2  , blending: THREE.AdditiveBlending, depthTest: params.depthTest, transparent: params.visible } );
 
 
-var center = new THREE.Points( geometry, material );
+		var center = new THREE.Points( geometry, material );
 
-center.position.x =0;
-center.position.y = 0;
-center.position.z = 0;
-scene.add(center);
-var espacio=10;
+		center.position.x =0;
+		center.position.y = 0;
+		center.position.z = 0;
+		scene.add(center);
+		var espacio=10;
+		var salto= true;
+		var numero_espacio = 0;
+		// ADDING ALL PARTICLES
 			for ( let j = 0; j < params.total; j ++ ) {
 					cant_cir++;
-					if(cant_cir%espacio==0){
+					/*if(cant_cir%espacio==0){
 						params.radio=params.radio+espacio;
 						espacio=espacio*2;
 
-					}
-					params.radio=params.radio+10;
-					
-				for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
+					}*/
+					params.radio=params.radio+30;// RADIO OF THE CIRCLES
+					salto = true;
+				//for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
+				//for ( let i = 0; i < salto && (j <  params.total); i ++) {
 
-
+				for ( let i = 0; salto &&( (i < (params.radio*2) )&& (j <  params.total)); i ++) {
 				
-
-
+					
+					
+					//if(435001 > i && i> 0){var uniqueColor = new THREE.Color( "fuchsia" );}
+					// PARTICLE POSITION
 					
 				 allParticles[j] = { name: j, position: new THREE.Vector3(  Math.cos(Math.PI*i/params.radio ) * params.radio, 0, Math.sin(Math.PI*i/params.radio ) *  params.radio ),link : document.createElement('a') };
-				 allParticles[j].link.href = link_href;
-				 allParticles[j].link.target = "_blank";
+				if(link_href[j+1]!=undefined){ allParticles[j].link.href = link_href[j+1];
+				 allParticles[j].link.target = "_blank";}// IF THERE IS UNDEFINED REFERENCE IT WONT LINK TO ANOTHER WEBPAGE
+				 if(j== 499749||j== 499499||j== 497499||j== 494999||j== 469999||j== 434999||j== 374999||j== 299999||j== 199999){salto = false; // IF IT IS AT THIS PARTICLES IT MAKES THE JUMP FOR THE REGION
+					espacio=100;params.radio=params.radio+espacio;
+				}
 					j++;
 				}
 				j--;
@@ -615,7 +749,7 @@ var espacio=10;
 						size: 5,
 						transparent: false,
 						//sizeAttenuation: false,
-						//vertexColors: THREE.VertexColors,
+						vertexColors: THREE.VertexColors,
 						blending: THREE.AdditiveBlending,
 						 depthTest: false,
 					});
@@ -623,19 +757,31 @@ var espacio=10;
 					particleSystem = new THREE.Points( particles, pMaterial );
 					particleSystem.name = "cumeda";
 					particleSystem.userData.particles = []; // to keep track of particles
-		
+					var color_particle = 1;
 					allParticles.forEach( function( particle ) {
+						// HERE MAKES THE REGION COLORS
+						if(color_particle>= 499751){var uniqueColor = new THREE.Color( "green" );}
+						if(499750 >= color_particle && color_particle>= 499501){var uniqueColor = new THREE.Color( "orange" );}
+						if(499500 >= color_particle && color_particle>= 497501){var uniqueColor = new THREE.Color( "silver" );}
+						if(497500 >= color_particle && color_particle>= 470001){var uniqueColor = new THREE.Color( "gold" );}
+						if(470000 >= color_particle && color_particle>= 435001){var uniqueColor = new THREE.Color( "red" );}
+						if(435000 >= color_particle && color_particle>= 375001){var uniqueColor = new THREE.Color( "yellow" );}
+						if(375000 >= color_particle && color_particle>= 300001){var uniqueColor = new THREE.Color( "fuchsia" );}
+						if(300000 >= color_particle && color_particle>= 200001){var uniqueColor = new THREE.Color( "blue" );}
+						if(200000 >= color_particle){var uniqueColor = new THREE.Color( "white" );}
 						particles.vertices.push( particle.position );
 						// Give each particle its own unique colour ... (we could
 						// do this on-demand as a refinement, perhaps temporarily give
 						// it a different THREE.Color on hover, for example)
-						var uniqueColor = new THREE.Color( 0xFFFFFF );
+						//pMaterial.map = texture;
+						particle.map = texture;
 						particles.colors.push( uniqueColor );
-						particle.uniqueColor = uniqueColor;
+						//particle.uniqueColor = uniqueColor;
 						// Make sure we can later find our particle again
 						particleSystem.userData.particles.push( particle );
+						color_particle++;
 					});
-					
+					//particleSystem.userData.particles[10].map = texture;
 					scene.add( particleSystem );
 				});
 		
@@ -647,7 +793,7 @@ var espacio=10;
 
 		
 
-			function render() {
+	function render() {
 
 				TweenUmd.update();//********************************************************************************************************************** */
 			
@@ -656,19 +802,19 @@ var espacio=10;
 
 			}
 
- 
+ /******************************************************************RAYCAST********************************************/
 function raycast() {     
 	raycaster.setFromCamera( mouse, camera );	
 	var intersects  ;
 	
-	
+	// SCALE SPRITES
 	var scaleFactor = 9;
 	if(to_look_outside){var scale = scaleVector.subVectors(allParticles[to_look_outside].position, camera.position).length() / scaleFactor;
 		controls.update();
 		camera.lookAt( allParticles[to_look_outside].position.x, allParticles[to_look_outside].position.y, allParticles[to_look_outside].position.z );
 		sprite_1_buscado.scale.set(scale, scale, 1);
-		sprite_2_buscado.scale.set(scale, scale, 1);
-		sprite_3_buscado.scale.set(scale, scale, 1);
+		//sprite_2_buscado.scale.set(scale, scale, 1);
+		//sprite_3_buscado.scale.set(scale, scale, 1);
 	}
 	  
 	
@@ -679,7 +825,7 @@ function raycast() {
   
   
   
-  
+  // LOOK FOR WHAT THE MOUSE IS HOVERING
 	
 			if ( intersects.length > 0 ) {
 				
@@ -705,38 +851,44 @@ function raycast() {
 						
 					
 				}
+				// ADDING TEXT SPRITE TO THE PARTICLE HOVERING 
 				intersects = intersects.sort( function( a, b ) {
 					return a.distanceToRay - b.distanceToRay;
 					});
 				 partic = intersects[0];
 				sprite_1= makeTextSprite( " "+(partic.index +1)+ "  ", { fontsize: 24}  );//( " "+(partic.index +1)+ "  ");
-				sprite_2=makeText(link_href);
-				sprite_3=makeText( "  "+nombre+" ");
+				
+				if(link_href[partic.index+1]!=undefined){ sprite_2=makeText(link_href[partic.index +1] );sprite_3=makeText( "  "+nombre[partic.index +1]+" "  );	allParticles[partic.index].link.href = link_href[partic.index+1]; allParticles[partic.index].link.target = "_blank";}else{
+					sprite_2=makeText("", { fontsize: 24}  );sprite_3=makeText( "", { fontsize: 24}  );
+					
+				}
+				
 				//if((0<=partic.index)&&partic.index<=params.total){	
 					//console.log( 'got a click on particle', partic.index  );
 					sprite_1.position.x= allParticles[partic.index].position.x;
 					sprite_1.position.y= 1;
 					sprite_1.position.z= allParticles[partic.index].position.z;
-					sprite_2.position.x= allParticles[partic.index].position.x;
-					sprite_2.position.y= 2;
-					sprite_2.position.z= allParticles[partic.index] .position.z;
-					sprite_3.position.x= allParticles[partic.index].position.x;
-					sprite_3.position.y= 3;
-					sprite_3.position.z= allParticles[partic.index] .position.z;
+					//sprite_2.position.x= allParticles[partic.index].position.x;
+					sprite_2.position.y= 0.6;
+					//sprite_2.position.z= allParticles[partic.index] .position.z;
+					//sprite_3.position.x= allParticles[partic.index].position.x;
+					sprite_3.position.y= 0.2;
+					//sprite_3.position.z= allParticles[partic.index] .position.z;
 					 scaleFactor = 9;
 					var scale = scaleVector.subVectors(allParticles[partic.index].position, camera.position).length() / scaleFactor;
 
 					sprite_1.scale.set(scale, scale, 1);
-					sprite_2.scale.set(scale, scale, 1);
-					sprite_3.scale.set(scale, scale, 1);
+					//sprite_2.scale.set(scale, scale, 1);
+					//sprite_3.scale.set(scale, scale, 1);
 			//	}
 
 			
-			
+			// IF THERE IS SOMETHING ALREADY HOVERING REMOVE AND PUT IT AGAIN TO EVADE MORE THAN ONE SPRITE TEXT
 			if(INTERSECTED.children[0]){INTERSECTED.remove(INTERSECTED.children[0]);}
-			
+			sprite_2.add(sprite_3);
+			sprite_1.add(sprite_2);
 				partic.object.add(sprite_1);
-				//partic.object.add(sprite_2);
+				
 				//partic.object.add(sprite_3);
 	  
 			} else {

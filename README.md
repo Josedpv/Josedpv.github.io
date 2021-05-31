@@ -12,7 +12,7 @@
 
   cd src
 ...
-  node demo_create_db
+  node app.js
  ####  3 - Run project
 In another Terminal execute command to resolve dependencies:
 ```
