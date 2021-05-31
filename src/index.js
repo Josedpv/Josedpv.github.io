@@ -763,7 +763,8 @@ function animate()
 						if(color_particle>= 499751){var uniqueColor = new THREE.Color( "green" );}
 						if(499750 >= color_particle && color_particle>= 499501){var uniqueColor = new THREE.Color( "orange" );}
 						if(499500 >= color_particle && color_particle>= 497501){var uniqueColor = new THREE.Color( "silver" );}
-						if(497500 >= color_particle && color_particle>= 470001){var uniqueColor = new THREE.Color( "gold" );}
+						if(497500 >= color_particle && color_particle>= 495001){var uniqueColor = new THREE.Color( "gold" );}
+						if(495000 >= color_particle && color_particle>= 470001){var uniqueColor = new THREE.Color( "pink" );}
 						if(470000 >= color_particle && color_particle>= 435001){var uniqueColor = new THREE.Color( "red" );}
 						if(435000 >= color_particle && color_particle>= 375001){var uniqueColor = new THREE.Color( "yellow" );}
 						if(375000 >= color_particle && color_particle>= 300001){var uniqueColor = new THREE.Color( "fuchsia" );}
