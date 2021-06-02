@@ -257,7 +257,7 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:500000,// PARTICLES TOTAL
+	total:500,// PARTICLES TOTAL
 	blending:  true,
 	depthTest: true,
 	radio: 10,
@@ -700,14 +700,15 @@ function animate()
 		var center = new THREE.Points( geometry, material );
 
 		center.position.x =0;
-		center.position.y = 0;
+		center.position.y = 550;
 		center.position.z = 0;
 		scene.add(center);
 		var espacio=10;
 		var salto= true;
 		var numero_espacio = 0;
+		var piso = 500;
 		// ADDING ALL PARTICLES
-			for ( let j = 0; j < params.total; j ++ ) {
+			for ( let j = 500000;j > 0; j -- ) {
 					cant_cir++;
 					/*if(cant_cir%espacio==0){
 						params.radio=params.radio+espacio;
@@ -719,22 +720,23 @@ function animate()
 				//for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
 				//for ( let i = 0; i < salto && (j <  params.total); i ++) {
 
-				for ( let i = 0; salto &&( (i < (params.radio*2) )&& (j <  params.total)); i ++) {
+				for ( let i = 0; salto &&( (i < (params.radio*2) )&& (j > 0)); i ++) {
 				
 					
 					
 					//if(435001 > i && i> 0){var uniqueColor = new THREE.Color( "fuchsia" );}
 					// PARTICLE POSITION
 					
-				 allParticles[j] = { name: j, position: new THREE.Vector3(  Math.cos(Math.PI*i/params.radio ) * params.radio, 0, Math.sin(Math.PI*i/params.radio ) *  params.radio ),link : document.createElement('a') };
+				 allParticles[j] = { name: j, position: new THREE.Vector3(  Math.cos(Math.PI*i/params.radio ) * params.radio, piso, Math.sin(Math.PI*i/params.radio ) *  params.radio ),link : document.createElement('a') };
 				if(link_href[j+1]!=undefined){ allParticles[j].link.href = link_href[j+1];
 				 allParticles[j].link.target = "_blank";}// IF THERE IS UNDEFINED REFERENCE IT WONT LINK TO ANOTHER WEBPAGE
-				 if(j== 499749||j== 499499||j== 497499||j== 494999||j== 469999||j== 434999||j== 374999||j== 299999||j== 199999){salto = false; // IF IT IS AT THIS PARTICLES IT MAKES THE JUMP FOR THE REGION
+				 if(j== 499751||j== 499501||j== 497501||j== 495001||j== 470001||j== 435001||j== 375001||j== 300001||j== 200001){salto = false; // IF IT IS AT THIS PARTICLES IT MAKES THE JUMP FOR THE REGION
 					espacio=100;params.radio=params.radio+espacio;
+					piso = piso-50;
 				}
-					j++;
+					j--;
 				}
-				j--;
+				j++;
 					
 			}
 				
@@ -866,9 +868,9 @@ function raycast() {
 				
 				//if((0<=partic.index)&&partic.index<=params.total){	
 					//console.log( 'got a click on particle', partic.index  );
-					sprite_1.position.x= allParticles[partic.index].position.x;
-					sprite_1.position.y= 1;
-					sprite_1.position.z= allParticles[partic.index].position.z;
+					sprite_1.position.x= allParticles[partic.index+1].position.x;
+					sprite_1.position.y= allParticles[partic.index+1].position.y+1;
+					sprite_1.position.z= allParticles[partic.index+1].position.z;
 					//sprite_2.position.x= allParticles[partic.index].position.x;
 					sprite_2.position.y= 0.6;
 					//sprite_2.position.z= allParticles[partic.index] .position.z;
