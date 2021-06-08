@@ -207,7 +207,9 @@ const Stats = require('stats.js');
 
 	 import  TweenUmd from './client/js/TWEEN/Tween.umd.js';
 
-
+	 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+	// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+//import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //Model loaders
 /******************************************************************GLOBAL VALUES********************************************/
@@ -425,7 +427,7 @@ function buscar(to_look){
 	//if((0<=partic.index)&&partic.index<=params.total){	
 		//console.log( 'got a click on particle', partic.index  );
 		sprite_1_buscado.position.x= allParticles[to_look].position.x;
-		sprite_1_buscado.position.y= 1;
+		sprite_1_buscado.position.y= allParticles[to_look].position.y+ 1;
 		sprite_1_buscado.position.z= allParticles[to_look].position.z;
 		//sprite_2_buscado.position.x= allParticles[to_look].position.x;
 		sprite_2_buscado.position.y= 0.6;
@@ -441,8 +443,9 @@ function buscar(to_look){
 		Circular(to_look_outside);//movimiento circular
 		
 //	}
+if(link_href[to_look+1]!=undefined){
 sprite_2_buscado.add(sprite_3_buscado);
-sprite_1_buscado.add(sprite_2_buscado);
+sprite_1_buscado.add(sprite_2_buscado);}
 scene.add(sprite_1_buscado);
 
 }
@@ -698,11 +701,26 @@ function animate()
 
 
 		var center = new THREE.Points( geometry, material );
-
+		/*loadGLTF('../client/js/images/Earth.glb', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
+			console.log('termine gltf!');
+			mixerCap = new THREE.AnimationMixer( gltf.scene );
+			var action = mixerCap.clipAction( gltf.animations[ 0 ] );
+			action.play();
+			
+		}).catch(function (err) {
+			console.log(err);
+		});*/
+		loadFBX("../client/js/images/Earth.fbx", [2, 0, 10], [0.01, 0.01, 0.01]).then(function(obj1){
+			console.log('termine!');
+			mixer = new THREE.AnimationMixer( obj1 );
+		var action = mixer.clipAction( obj1.animations[ 0 ] );
+			action.play();
+	
+		})
 		center.position.x =0;
 		center.position.y = 550;
 		center.position.z = 0;
-		scene.add(center);
+		//scene.add(center);
 		var espacio=10;
 		var salto= true;
 		var numero_espacio = 0;
@@ -749,11 +767,11 @@ function animate()
 					var pMaterial = new THREE.PointsMaterial({
 						map: texture,
 						size: 5,
-						transparent: false,
+						transparent: true,
 						//sizeAttenuation: false,
 						vertexColors: THREE.VertexColors,
 						blending: THREE.AdditiveBlending,
-						 depthTest: false,
+						depthTest: params.depthTest,
 					});
 		
 					particleSystem = new THREE.Points( particles, pMaterial );
@@ -917,6 +935,94 @@ function raycast() {
   
   
   }
+  function loadFBX(path,pos,scale) {
+	const promise = new Promise(function (resolve, reject) {
+		var loader = new FBXLoader();
+		loader.load( path, function ( object ) {
+	
+			console.log(object);
+			object.scale.set(scale[0], scale[1], scale[2]);
+			object.position.set(pos[0], pos[1], pos[2]);
+				
+			object.traverse( function ( child ) {
+				if ( child.isMesh ) {
+					child.castShadow = true;
+					child.receiveShadow = true;
+				}
+				//childd[Gltf_number]=child;// Downloader
+			} );
+			scene.add( object );
+			//childd[Gltf_number]=object;// Downloader
+			console.log(object);
+			if (object == null) {
+				reject();
+			}else{
+				resolve(object);
+			}
+	
+		} );
+		
+	})
+	
+
+	return promise;
+}
+
+function loadGLTF(path, pos,scale) {
+	return new Promise((resolve, reject)=>{
+
+		// Instantiate a loader
+		var loader = new GLTFLoader();
+	
+		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
+		var dracoLoader = new DRACOLoader();
+		// dracoLoader.setDecoderPath( '/examples/js/libs/draco/' );
+		dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+		loader.setDRACOLoader( dracoLoader );
+	
+		// Load a glTF resource
+		loader.load(
+			// resource URL
+			path,
+			// called when the resource is loaded
+			function ( gltf ) {
+				//Transformations
+				gltf.scene.scale.set(scale[0], scale[1], scale[2]);
+				gltf.scene.position.set(pos[0], pos[1], pos[2]);
+				gltf.scene.castShadow = true;
+				gltf.scene.receiveShadow = true;
+				gltf.scene.traverse( function ( child ) {
+					if ( child.isMesh ) {
+						child.castShadow = true;
+						child.receiveShadow = true;
+					}
+				} );
+				scene.add( gltf.scene );
+				console.log(gltf);
+				
+				gltf.animations; // Array<THREE.AnimationClip>
+				gltf.scene; // THREE.Group
+				gltf.scenes; // Array<THREE.Group>
+				gltf.cameras; // Array<THREE.Camera>
+				gltf.asset; // Object
+				
+				resolve(gltf);
+	
+			},
+			// called while loading is progressing
+			function ( xhr ) {
+	
+				console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+	
+			},
+			// called when loading has errors
+			function ( error ) {
+	
+				console.log( 'An error happened' );
+				reject(error);
+			});	
+	});
+}
 init();
 main();
 animate();
