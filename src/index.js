@@ -257,7 +257,7 @@ var puede= false;
 const params = {
 	texture: true,
 	visible:true,
-	total:500,// PARTICLES TOTAL
+	total:500000,// PARTICLES TOTAL
 	blending:  true,
 	depthTest: true,
 	radio: 10,
@@ -453,7 +453,7 @@ function addGUI()
 	document.body.appendChild( stats.dom );
 	
 	//particulas sphere
-	/*var guiparameters = gui.addFolder('Particle System');
+	var guiparameters = gui.addFolder('Particle System');
 
 				
 			
@@ -467,7 +467,7 @@ function addGUI()
 			
 			
 
-			guiparameters.open();	*/
+			guiparameters.open();	
 	
 }
 
