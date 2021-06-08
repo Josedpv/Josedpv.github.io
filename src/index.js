@@ -192,7 +192,7 @@ function loadHTMLTable(data, to) {
 		link_href[ID] = address;
         nombre[ID] = name;
     });
-	if(look){buscar(id-1); }
+	if(look){buscar(id); }
 		
     table.innerHTML = tableHtml;}
 //import { porfin } from './coneccion';
@@ -421,9 +421,9 @@ function buscar(to_look){
 	//camera.position.z=10+ allParticles[to_look].position.z;
 	//camera.position.y=10+ allParticles[to_look].position.y;
 	//camera.lookAt( allParticles[to_look].position.x, allParticles[to_look].position.y, allParticles[to_look].position.z );
-	sprite_1_buscado= makeTextSprite( " "+(to_look +1)+ "  ", { fontsize: 24}  );//( " "+(partic.index +1)+ "  ");
-	sprite_2_buscado=makeText(link_href[to_look+1]);
-	sprite_3_buscado=makeText( "  "+nombre[to_look+1]+" ");
+	sprite_1_buscado= makeTextSprite( " "+(to_look )+ "  ", { fontsize: 24}  );//( " "+(partic.index +1)+ "  ");
+	sprite_2_buscado=makeText(link_href[to_look]);
+	sprite_3_buscado=makeText( "  "+nombre[to_look]+" ");
 	//if((0<=partic.index)&&partic.index<=params.total){	
 		//console.log( 'got a click on particle', partic.index  );
 		sprite_1_buscado.position.x= allParticles[to_look].position.x;
@@ -443,7 +443,7 @@ function buscar(to_look){
 		Circular(to_look_outside);//movimiento circular
 		
 //	}
-if(link_href[to_look+1]!=undefined){
+if(link_href[to_look]!=undefined){
 sprite_2_buscado.add(sprite_3_buscado);
 sprite_1_buscado.add(sprite_2_buscado);}
 scene.add(sprite_1_buscado);
@@ -462,7 +462,7 @@ function addGUI()
 			
 				guiparameters.add( params, 'totales' ).min(0).max(500000).step(1).onChange( function ( value ) {
 					
-					buscar(value-1);
+					buscar(value);
 					
 
 				} );
