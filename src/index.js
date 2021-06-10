@@ -261,7 +261,7 @@ const params = {
 	visible:true,
 	total:500000,// PARTICLES TOTAL
 	blending:  true,
-	depthTest: true,
+	depthTest: false,
 	radio: 10,
 	grado: 6,
 	totales:1,
@@ -381,6 +381,8 @@ function init()
 	};
 	
 	renderer = new THREE.WebGLRenderer({ canvas });
+	//renderer.gammaOutput = true;
+	//renderer.physicallyCorrectLights = true;
 	scene = new THREE.Scene();
     // scene.fog = new THREE.Fog( 0x443333, 1, 4 );
  /*****************************START ADDED CODE***************/
@@ -502,9 +504,30 @@ document.body.appendChild( renderer.domElement );
 	
 
 	 /*****************************START ADDED CODE***************/
-	 
+	 var plight=new THREE.PointLight(0xffffff,0.1);
 
-	 
+		plight.penumbra = 0.5;
+		plight.castShadow = true;
+		var object1	= new THREE.Mesh( new THREE.SphereGeometry( 100, 30, 30 ), new THREE.MeshBasicMaterial({ color: "white", transparent:true, opacity:0.50 }) );
+		object1.position.x = 0;
+		object1.position.y = 300;
+		object1.position.z = 0;
+		scene.add( object1 );
+		var object2	= new THREE.Mesh( new THREE.SphereGeometry( 115, 30, 30 ), new THREE.MeshBasicMaterial({ color: "white", transparent:true, opacity:0.30 }) );
+		object2.position.x = 0;
+		object2.position.y = 300;
+		object2.position.z = 0;
+		object1.add(plight);
+		scene.add( object2 );
+		scene.add( object1 );
+
+	 loadFBX("../client/js/images/Earth.fbx", [0, 300, 0], [0.005, 0.005, 0.005]).then(function(obj1){
+		console.log('termine!');
+		//mixer = new THREE.AnimationMixer( obj1 );
+	//var action = mixer.clipAction( obj1.animations[ 0 ] );
+	//	action.play();
+		
+	})
 	 
 	 renderer.domElement.addEventListener( 'click', onMouseClick );
 
@@ -701,7 +724,7 @@ function animate()
 
 
 		var center = new THREE.Points( geometry, material );
-		/*loadGLTF('../client/js/images/Earth.glb', [1, 0, 0], [0.5, 0.5, 0.5]).then(function(gltf){
+		/*loadGLTF('../client/js/images/Earth.glb', [0, 100, 0], [0.005, 0.005, 0.005]).then(function(gltf){
 			console.log('termine gltf!');
 			mixerCap = new THREE.AnimationMixer( gltf.scene );
 			var action = mixerCap.clipAction( gltf.animations[ 0 ] );
@@ -710,11 +733,13 @@ function animate()
 		}).catch(function (err) {
 			console.log(err);
 		});*/
-		loadFBX("../client/js/images/Earth.fbx", [2, 0, 10], [0.01, 0.01, 0.01]).then(function(obj1){
+		
+		loadFBX("../client/js/images/Earth.fbx", [0, 300, 0], [0.001, 0.001, 0.001]).then(function(object1){
 			console.log('termine!');
-			mixer = new THREE.AnimationMixer( obj1 );
-		var action = mixer.clipAction( obj1.animations[ 0 ] );
-			action.play();
+			//mixer = new THREE.AnimationMixer( obj1 );
+		//var action = mixer.clipAction( obj1.animations[ 0 ] );
+		//	action.play();
+	
 	
 		})
 		center.position.x =0;
@@ -802,7 +827,7 @@ function animate()
 						particleSystem.userData.particles.push( particle );
 						color_particle++;
 					});
-					//particleSystem.userData.particles[10].map = texture;
+					
 					scene.add( particleSystem );
 				});
 		
@@ -949,8 +974,20 @@ function raycast() {
 					child.castShadow = true;
 					child.receiveShadow = true;
 				}
-				//childd[Gltf_number]=child;// Downloader
+				if(child instanceof THREE.Mesh){
+				child.material.transparent =true; 
+				//child.material.emissive = "white" ;
+				child.material.opacity = 0.70;
+				child.material.emissiveColor = "white" ;
+				child.material.emissiveIntensity = 1 ;//console.log(child.material);
+				child.material.metalness = 0;
+				child.material.roughness = 0 ;
+				}
+				
 			} );
+			//object.visible = false;
+				//childd[Gltf_number]=child;// Downloader
+			
 			scene.add( object );
 			//childd[Gltf_number]=object;// Downloader
 			console.log(object);
@@ -995,6 +1032,13 @@ function loadGLTF(path, pos,scale) {
 					if ( child.isMesh ) {
 						child.castShadow = true;
 						child.receiveShadow = true;
+
+					}
+					if(child instanceof THREE.Mesh){
+						
+						//child.material.emissive ;
+					child.material.emissiveIntensity = 1 ;//console.log(child.material);
+					
 					}
 				} );
 				scene.add( gltf.scene );
