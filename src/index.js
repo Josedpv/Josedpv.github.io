@@ -529,7 +529,7 @@ document.body.appendChild( renderer.domElement );
 		
 	})
 	 
-	 renderer.domElement.addEventListener( 'click', onMouseClick );
+	 renderer.domElement.addEventListener( 'dblclick', onMouseClick );//click
 
 	renderer.domElement.addEventListener( 'dblclick', onMousedblClick );
 	renderer.domElement.addEventListener( 'mousemove', onMouseMove );
@@ -681,7 +681,10 @@ function onMouseClick( event ) {
 }
 function onMousedblClick( event ) {
 
-	if ( INTERSECTED !== null )partic.object.userData.particles[ partic.index ].link.click(); 
+	if ( INTERSECTED !== null ){
+		partic.object.userData.particles[ partic.index ].link.click(); 
+		buscar(partic.index+1);
+	}
 }
 function onMouseMove( event ) {
       
@@ -931,10 +934,11 @@ function raycast() {
 			
 			// IF THERE IS SOMETHING ALREADY HOVERING REMOVE AND PUT IT AGAIN TO EVADE MORE THAN ONE SPRITE TEXT
 			if(INTERSECTED.children[0]){INTERSECTED.remove(INTERSECTED.children[0]);}
-			sprite_2.add(sprite_3);
-			sprite_1.add(sprite_2);
-				partic.object.add(sprite_1);
-				
+				if(partic.index+1!=to_look_outside){
+					sprite_2.add(sprite_3);
+					sprite_1.add(sprite_2);
+					partic.object.add(sprite_1);
+				}
 				//partic.object.add(sprite_3);
 	  
 			} else {
