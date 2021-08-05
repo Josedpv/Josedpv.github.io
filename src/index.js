@@ -205,8 +205,9 @@ const Stats = require('stats.js');
       //import { Examples, ParticleEngine } from 'js/ParticleEngine.js';
      /*****************************FINISH ADDED CODE**************/
 
+	 import  InfiniteGridHelper from './client/js/THREE/InfiniteGridHelper.js';
+	 import  Sky from './client/js/THREE/Sky.js';
 	 import  TweenUmd from './client/js/TWEEN/Tween.umd.js';
-
 	 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 	// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 //import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -235,7 +236,8 @@ var spotLight, light, hemisLight;
 var gui;
 var obj;
 var stats;
-
+var grid_infinity;
+var gridparameters;
 //DownLoader
 var INTERSECTED = null;
 var raycaster = new THREE.Raycaster();
@@ -451,6 +453,29 @@ sprite_1_buscado.add(sprite_2_buscado);}
 scene.add(sprite_1_buscado);
 
 }
+function change_controls(bool) 
+{
+	if(bool){controls.enableRotate = false;
+		camera.position.x = 0;
+	camera.position.y = 1000;
+	camera.position.z = 0;
+	camera.lookAt( 0, 0, 0 );
+	}else{controls.enableRotate = true;
+	}
+}
+function addgridgui() 
+{
+	const color = {
+		value: 0xffffff
+		};
+	gridparameters = gui.addFolder('2.5D Activated');			
+	gridparameters.add(grid_infinity.material.uniforms.uSize1, "value", 2, 100).step(1).name("Size 1");
+	gridparameters.add(grid_infinity.material.uniforms.uSize2, "value", 2, 1000).step(1).name("Size 2");
+	gridparameters.add(grid_infinity.material.uniforms.uDistance, "value", 100, 10000).step(1).name("Distance");
+	gridparameters.addColor(color, "value").name("Color").onChange( function() { grid_infinity.material.uniforms.uColor.value.set( color.value ); } );
+	gridparameters.close();
+	
+}
 function addGUI() 
 {
 	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -468,11 +493,16 @@ function addGUI()
 					
 
 				} );
-				
-			
-			
+	var showgrid = gui.addFolder('2.5D Activate');		
+	showgrid.add( grid_infinity, 'visible' ).onChange( function ( value ) {
+					
+					if(!value){gridparameters.hide();change_controls(false);}else{gridparameters.show();change_controls(true);}
+					grid_infinity.hidden = value;
 
-			guiparameters.open();	
+				} );
+	
+				
+				guiparameters.open();	
 	
 }
 
@@ -496,13 +526,13 @@ document.body.appendChild( renderer.domElement );
 	//camera.lookAt( 0, 0.1, 0 );
     controls = new OrbitControls( camera, renderer.domElement );
 	addLights();
-	addGUI() ;
+	
 	
     particulas();
 	setupTween();
 	
-	
-
+	grid();
+	addGUI() ;
 	 /*****************************START ADDED CODE***************/
 	 var plight=new THREE.PointLight(0xffffff,0.1);
 
@@ -694,6 +724,97 @@ function onMouseMove( event ) {
 		  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
+
+
+
+
+
+
+
+
+
+function grid(){
+				//var mesh, renderer, scene, camera, controls;
+
+
+/*
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.outputEncoding = THREE.sRGBEncoding;
+				renderer.gammaFactor = 2.2;
+				document.body.appendChild( renderer.domElement );
+
+				const gui = new dat.GUI();
+
+				scene = new THREE.Scene();
+				
+				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( -200, 50, 400 );
+				camera.lookAt(new THREE.Vector3(0,0,0));*/
+
+				//controls = new THREE.OrbitControls( camera, renderer.domElement );
+				
+				scene.add( new THREE.AmbientLight( 0x222222 ) );
+				
+				var light = new THREE.DirectionalLight( 0xffffff, 1 );
+				light.position.set( 80, 80, 80 );
+				scene.add( light );
+			
+				/*
+				sky = new Sky();
+				sky.scale.setScalar( 450000 );
+				scene.add( sky );
+  
+				var effectController = {
+					turbidity: 10,
+					rayleigh: 2,
+					mieCoefficient: 0.005,
+					mieDirectionalG: 0.8,
+					inclination: 0.49, // elevation / inclination
+					azimuth: 0.25, // Facing front,
+					sun: ! true
+				};
+				
+					var uniforms = sky.material.uniforms;
+
+					uniforms[ "turbidity" ].value = effectController.turbidity;
+					uniforms[ "rayleigh" ].value = effectController.rayleigh;
+					uniforms[ "mieCoefficient" ].value = effectController.mieCoefficient;
+					uniforms[ "mieDirectionalG" ].value = effectController.mieDirectionalG;
+					uniforms[ "sunPosition" ].value.set(400000, 400000, 400000);
+  */
+     
+
+					grid_infinity = new THREE.InfiniteGridHelper(10, 100);
+
+					const color = {
+					value: 0xffffff
+					};
+
+					addgridgui();
+
+					scene.add(grid_infinity);
+				/*	function animate() {
+
+						requestAnimationFrame( animate );
+
+						renderer.render( scene, camera );
+
+					}
+
+
+
+					animate();*/
+
+}
+
+
+
+
+
+
+
+
 
 function animate() 
 {
