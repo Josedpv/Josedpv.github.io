@@ -506,6 +506,7 @@ function addGUI()
 	
 }
 
+
 function main() {
 
 	
@@ -521,8 +522,8 @@ function main() {
 document.body.appendChild( renderer.domElement );
 	//Camera
 	camera.position.x = 1000;
-	camera.position.y = 1000;
-	camera.position.z = 1000;
+	camera.position.y = 8000;
+	camera.position.z = 20000;
 	//camera.lookAt( 0, 0.1, 0 );
     controls = new OrbitControls( camera, renderer.domElement );
 	addLights();
@@ -534,6 +535,11 @@ document.body.appendChild( renderer.domElement );
 	grid();
 	addGUI() ;
 	 /*****************************START ADDED CODE***************/
+
+	
+
+
+
 	 var plight=new THREE.PointLight(0xffffff,0.1);
 
 		plight.penumbra = 0.5;
@@ -558,15 +564,123 @@ document.body.appendChild( renderer.domElement );
 	//	action.play();
 		
 	})
+
+	// planet1
+	var geometry1 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const geometry1Material = new THREE.MeshPhongMaterial({
+	roughness: 1,
+	metalness: 0,
+	map: THREE.ImageUtils.loadTexture('../texture/venmap.jpg'),
+	bumpMap: THREE.ImageUtils.loadTexture('../texture/venbump.jpg'),
+	bumpScale: 5000,
+	});
+
+	var mesh1 = new THREE.Mesh(geometry1, geometry1Material);
+	mesh1.position.x = 7000;
+	mesh1.position.y = -4000;
+	mesh1.position.z = 5000;
+	// mesh6.add(atm2); //atmosphere
+	scene.add(mesh1);
+
+	// planet2
+	var geometry2 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const geometry2Material = new THREE.MeshPhongMaterial({
+	roughness: 1,
+	metalness: 0,
+	map: THREE.ImageUtils.loadTexture('../texture/nepmap.jpg'),
+	bumpMap: THREE.ImageUtils.loadTexture('../texture/nepbump.jpg'),
+	bumpScale: 5000,
+	});
+
+	var mesh2 = new THREE.Mesh(geometry2, geometry2Material);
+	mesh2.position.x = 14000;
+	mesh2.position.y = 4000;
+	mesh2.position.z = 1000;
+	// mesh6.add(atm2); //atmosphere
+	scene.add(mesh2);
+
+	// planet3
+	var geometry3 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const geometry3Material = new THREE.MeshPhongMaterial({
+	roughness: 1,
+	metalness: 0,
+	map: THREE.ImageUtils.loadTexture('../texture/moonmap1k.jpg'),
+	bumpMap: THREE.ImageUtils.loadTexture('../texture/moonbump1k.jpg'),
+	bumpScale: 5000,
+	});
+
+	var mesh3 = new THREE.Mesh(geometry3, geometry3Material);
+	mesh3.position.x = -4000;
+	mesh3.position.y = 800;
+	mesh3.position.z = 5000;
+	// mesh6.add(atm2); //atmosphere
+	scene.add(mesh3);
+
+
+	// planet4
+	var geometry4 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const geometry4Material = new THREE.MeshPhongMaterial({
+	roughness: 1,
+	metalness: 0,
+	map: THREE.ImageUtils.loadTexture('../texture/earthmap.jpg'),
+	bumpMap: THREE.ImageUtils.loadTexture('../texture/earthbump.jpg'),
+	bumpScale: 10000,
+	});
+
+	var mesh4 = new THREE.Mesh(geometry4, geometry4Material);
+	mesh4.position.x = 4000;
+	mesh4.position.y = 300;
+	mesh4.position.z = -9000;
+	// mesh6.add(atm2); //atmosphere
+	scene.add(mesh4);
+
+	// planet5
+	var geometry5 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const material = new THREE.MeshPhongMaterial( { 
+	map: THREE.ImageUtils.loadTexture('../texture/sunmap.jpg'), 
+	} );
+
+	var mesh5 = new THREE.Mesh(geometry5, material);
+
+	mesh5.position.x = 0;
+	mesh5.position.y = 300;
+	mesh5.position.z = 9000;
+
+
+	scene.add(mesh5);
+
+	// planet6
+	var geometry6 = new THREE.SphereGeometry(1000, 32, 32);
+
+	const geometry6Material = new THREE.MeshPhongMaterial({
+	roughness: 1,
+	metalness: 0,
+	map: THREE.ImageUtils.loadTexture('../texture/marsmap.jpg'),
+	bumpMap: THREE.ImageUtils.loadTexture('../texture/marsbump.jpg'),
+	bumpScale: 10000,
+	});
+
+	var mesh6 = new THREE.Mesh(geometry6, geometry6Material);
+	mesh6.position.x = 0;
+	mesh6.position.y = -900;
+	mesh6.position.z = -6000;
+	// mesh6.add(atm2); //atmosphere
+	scene.add(mesh6);
 	 
 	 renderer.domElement.addEventListener( 'dblclick', onMouseClick );//click
 
 	renderer.domElement.addEventListener( 'dblclick', onMousedblClick );
 	renderer.domElement.addEventListener( 'mousemove', onMouseMove );
 
-   
+   animate()
 	
 }
+
 /******************************************************************TEXSPRITE********************************************/
 function makeTextSprite( message, parameters)
 {
@@ -819,7 +933,6 @@ function grid(){
 function animate() 
 {
 	
-
   requestAnimationFrame(animate);
   
   render();
@@ -827,6 +940,7 @@ function animate()
   
   stats.update();
   var dt = clock.getDelta();
+
  
 }
 
@@ -1113,7 +1227,7 @@ function raycast() {
 			//object.visible = false;
 				//childd[Gltf_number]=child;// Downloader
 			
-			scene.add( object );
+			// scene.add( object );
 			//childd[Gltf_number]=object;// Downloader
 			console.log(object);
 			if (object == null) {
