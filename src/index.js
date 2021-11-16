@@ -793,7 +793,8 @@ function grid(){
 
 					addgridgui();
 
-					scene.add(grid_infinity);
+					// scene.add(grid_infinity);
+					
 				/*	function animate() {
 
 						requestAnimationFrame( animate );
@@ -882,7 +883,7 @@ function animate()
 						espacio=espacio*2;
 
 					}*/
-					params.radio=params.radio+30;// RADIO OF THE CIRCLES
+					params.radio=params.radio+300;// RADIO OF THE CIRCLES
 					salto = true;
 				//for ( let i = 0; i < (params.radio*2) && (j <  params.total); i ++) {
 				//for ( let i = 0; i < salto && (j <  params.total); i ++) {
@@ -915,7 +916,7 @@ function animate()
 		
 					var pMaterial = new THREE.PointsMaterial({
 						map: texture,
-						size: 5,
+						size: 90,
 						transparent: true,
 						//sizeAttenuation: false,
 						vertexColors: THREE.VertexColors,
